@@ -574,10 +574,12 @@ public class OrderService {
         OrderRequest.PaymentRequest paymentRequest = request.getPayment();
         PaymentMethod method = paymentRequest != null && paymentRequest.getMethod() != null
                 ? paymentRequest.getMethod()
-                : PaymentMethod.BANK_TRANSFER;
+                : PaymentMethod.VNPAY;
 
-        if (method != PaymentMethod.BANK_TRANSFER) {
-            throw new IllegalArgumentException("Chỉ hỗ trợ thanh toán chuyển khoản QR.");
+        if (method != PaymentMethod.VNPAY && 
+            method != PaymentMethod.MOMO && 
+            method != PaymentMethod.PAYPAL) {
+            throw new IllegalArgumentException("Chỉ hỗ trợ thanh toán trực tuyến (VNPAY, MOMO, PAYPAL).");
         }
 
         boolean isPaid = paymentRequest != null && Boolean.TRUE.equals(paymentRequest.getIsPaid());
