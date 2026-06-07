@@ -113,7 +113,7 @@ public class MoMoPaymentStrategyImpl implements PaymentStrategy {
                     .orderId(orderId)
                     .amount(totalAmount)
                     .description(orderInfo)
-                    .qrUrl(payUrl) // Reuse qrUrl for the redirect URL
+                    .qrUrl(payUrl) 
                     .build();
 
         } catch (Exception e) {

@@ -32,13 +32,13 @@ public class PaymentWebhookController {
     }
 
     @PostMapping("/momo-ipn")
-    public ResponseEntity<Void> momoIpn(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<String> momoIpn(@RequestBody Map<String, Object> payload) {
         log.info("Received MoMo IPN: {}", payload);
         boolean success = moMoStrategy.processIpn(payload);
         if (success) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("MoMo IPN processed successfully");
         } else {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("MoMo IPN processing failed");
         }
     }
 
