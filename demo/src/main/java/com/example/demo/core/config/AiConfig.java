@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.core.config;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,49 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.micrometer.observation.ObservationRegistry;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.embedding.observation.EmbeddingModelObservationConvention;
+import org.springframework.ai.google.genai.GoogleGenAiEmbeddingConnectionDetails;
+import org.springframework.ai.google.genai.text.GoogleGenAiTextEmbeddingModel;
+import org.springframework.ai.model.google.genai.autoconfigure.embedding.GoogleGenAiTextEmbeddingProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Configuration
+public class AiConfig {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    @Value("${spring.ai.google.genai.api-key:${GEMINI_API_KEY:}}")
+    private String geminiApiKey;
 
+    @Bean
+    public GoogleGenAiEmbeddingConnectionDetails googleGenAiEmbeddingConnectionDetails() {
+        return GoogleGenAiEmbeddingConnectionDetails.builder()
+                .apiKey(geminiApiKey != null && !geminiApiKey.isEmpty() ? geminiApiKey : "dummy-key")
+                .build();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(EmbeddingModel.class)
+    EmbeddingModel embeddingModel(
+        GoogleGenAiEmbeddingConnectionDetails connectionDetails,
+        GoogleGenAiTextEmbeddingProperties embeddingProperties,
+        RetryTemplate retryTemplate,
+        ObjectProvider<ObservationRegistry> observationRegistry,
+        ObjectProvider<EmbeddingModelObservationConvention> observationConvention
+    ) {
+        GoogleGenAiTextEmbeddingModel embeddingModel = new GoogleGenAiTextEmbeddingModel(
+            connectionDetails,
+            embeddingProperties.getOptions(),
+            retryTemplate,
+            observationRegistry.getIfUnique(() -> ObservationRegistry.NOOP)
+        );
+
+        observationConvention.ifAvailable(embeddingModel::setObservationConvention);
+        return embeddingModel;
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.orders.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,70 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+public class PaymentPrepareRequest {
 
+    @NotNull(message = "Payment method is required")
+    private PaymentMethod method;
+
+    @NotBlank(message = "Customer ID is required")
+    private String customerId;
+
+    @Size(max = 500, message = "Note must not exceed 500 characters")
+    private String note;
+
+    @Size(max = 255, message = "Shipping address must not exceed 255 characters")
+    private String shippingAddress;
+
+    private String voucherCode;
+
+    @NotEmpty(message = "Order must have at least one item")
+    @Valid
+    private List<OrderRequest.OrderItemRequest> items;
+
+    @Valid
+    private OrderRequest.ShippingRequest shipping;
+
+    public OrderRequest toOrderRequest() {
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setCustomerId(this.customerId);
+        orderRequest.setNote(this.note);
+        orderRequest.setShippingAddress(this.shippingAddress);
+        orderRequest.setVoucherCode(this.voucherCode);
+        
+        if (this.items != null) {
+            orderRequest.setItems(this.items.stream().map(item -> {
+                OrderRequest.OrderItemRequest copiedItem = new OrderRequest.OrderItemRequest();
+                copiedItem.setProductId(item.getProductId());
+                copiedItem.setQuantity(item.getQuantity());
+                return copiedItem;
+            }).toList());
+        }
+
+        if (this.shipping != null) {
+            OrderRequest.ShippingRequest copied = new OrderRequest.ShippingRequest();
+            copied.setTrackingNumber(shipping.getTrackingNumber());
+            copied.setCarrierName(shipping.getCarrierName());
+            copied.setCarrierPhone(shipping.getCarrierPhone());
+            copied.setEstimatedDelivery(shipping.getEstimatedDelivery());
+            copied.setFullName(shipping.getFullName());
+            copied.setPhone(shipping.getPhone());
+            copied.setProvince(shipping.getProvince());
+            copied.setDistrict(shipping.getDistrict());
+            copied.setWard(shipping.getWard());
+            copied.setDetailAddress(shipping.getDetailAddress());
+            orderRequest.setShipping(copied);
+        }
+        
+        return orderRequest;
+    }
 }

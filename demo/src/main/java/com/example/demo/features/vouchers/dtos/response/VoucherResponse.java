@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.vouchers.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,24 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+@Builder
+public class VoucherResponse {
 
+    private String id;
+    private String code;
+    private Integer discountPercent;
+    private Integer usageCount;
+    private Date validFrom;
+    private Date validTo;
+    private Date createdAt;
+    private Integer quantity;
+    private VoucherStatus status;
+    private Boolean active;
 }
+

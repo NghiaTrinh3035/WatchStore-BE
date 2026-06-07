@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.users.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,33 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.persistence.*;
+import lombok.*;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.ArrayList;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Entity
+@Table(name = "owners")
+@Getter
+@Setter
+@NoArgsConstructor
+@PrimaryKeyJoinColumn(name = "id")
+@EqualsAndHashCode(callSuper = true)
+public class Owner extends User {
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImportReceipt> importReceipts = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RevenueReport> revenueReports = new ArrayList<>();
+
+    public List<RevenueReport> getReviewReports() {
+        return revenueReports;
+    }
+
+    public void setReviewReports(List<RevenueReport> reviewReports) {
+        this.revenueReports = reviewReports;
+    }
 }

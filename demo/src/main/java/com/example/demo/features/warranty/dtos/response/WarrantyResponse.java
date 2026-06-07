@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.warranty.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,32 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+@Builder
+public class WarrantyResponse {
 
+    private String id;
+    private String userId;
+    private String customerId;
+    private String orderId;
+    private String orderItemId;
+    private String customerPhone;
+    private String customerName;
+    private String issueDescription;
+    private Date receivedDate;
+    private Date expectedReturnDate;
+    private Date createdAt;
+    private Date updatedAt;
+    private WarrantyStatus status;
+    private String technicianNote;
+    private String rejectReason;
+    private Integer quantity;
+    private String productId;
+    private String productName;
 }
+

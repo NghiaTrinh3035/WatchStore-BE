@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.products.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,45 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.ArrayList;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Entity
+@Table(name = "categories")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Category {
 
+    @Id
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
+
+    @NotBlank(message = "Category name is required")
+    @Size(max = 100, message = "Category name must not exceed 100 characters")
+    @Column(name = "name", nullable = false, unique = true, length = 100)
+    private String name;
+
+    @Size(max = 500, message = "Description must not exceed 500 characters")
+    @Column(name = "description", length = 500)
+    private String description;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @Builder.Default
+    private List<Product> products = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @Builder.Default
+    private List<Product> categorizedProducts = new ArrayList<>();
 }

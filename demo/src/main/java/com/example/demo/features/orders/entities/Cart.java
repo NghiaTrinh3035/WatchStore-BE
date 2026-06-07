@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.orders.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,41 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.ArrayList;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Entity
+@Table(name = "carts")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Cart {
 
+    @Id
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
+
+    @Min(value = 0, message = "Total amount must not be negative")
+    @Column(name = "total_amount", columnDefinition = "BIGINT DEFAULT 0")
+    @Builder.Default
+    private Long totalAmount = 0L;
+
+    @NotNull(message = "Customer is required")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false, unique = true)
+    @JsonIgnore
+    private Customer customer;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @Builder.Default
+    private List<CartItem> items = new ArrayList<>();
 }

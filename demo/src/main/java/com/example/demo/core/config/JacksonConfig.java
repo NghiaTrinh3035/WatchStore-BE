@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.core.config;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,22 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Configuration
+public class JacksonConfig {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
+        return builder -> builder
+                .featuresToDisable(
+                        SerializationFeature.FAIL_ON_EMPTY_BEANS,
+                        DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                        SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
+                );
+    }
 }

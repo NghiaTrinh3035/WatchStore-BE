@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.inventory.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,42 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Entity
+@Table(name = "import_details")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ImportDetail {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    @Id
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
 
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @NotNull(message = "Import price is required")
+    @Min(value = 0, message = "Import price must not be negative")
+    @Column(name = "import_price", nullable = false)
+    private Long importPrice;
+
+    @NotNull(message = "Import receipt is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "import_receipt_id", nullable = false)
+    private ImportReceipt importReceipt;
+
+    @NotNull(message = "Product is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 }

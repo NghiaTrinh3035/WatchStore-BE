@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.users.services;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,86 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class UserProfileService {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    private final CustomerRepository customerRepository;
+    private final OwnerRepository ownerRepository;
+    private final StaffRepository staffRepository;
 
+    public void syncProfileForRole(User user) {
+        if (user == null || user.getId() == null || user.getRole() == null) {
+            throw new IllegalArgumentException("User, id, and role are required to sync profiles");
+        }
+
+        switch (user.getRole()) {
+            case CUSTOMER -> {
+                ensureCustomerProfile(user);
+                removeOwnerProfileIfExists(user.getId());
+            }
+            case OWNER -> {
+                ensureOwnerProfile(user);
+                removeCustomerProfileIfExists(user.getId());
+            }
+            case STAFF -> {
+                ensureStaffProfile(user);
+                removeCustomerProfileIfExists(user.getId());
+                removeOwnerProfileIfExists(user.getId());
+            }
+        }
+    }
+
+    private void ensureCustomerProfile(User user) {
+        if (customerRepository.existsById(user.getId())) {
+            return;
+        }
+
+        Customer customer = new Customer();
+        customer.setId(user.getId());
+        customerRepository.save(customer);
+    }
+
+    private void ensureOwnerProfile(User user) {
+        ownerRepository.upsertOwnerProfile(user.getId());
+    }
+
+    private void ensureStaffProfile(User user) {
+        if (staffRepository.existsById(user.getId())) {
+            return;
+        }
+        staffRepository.insertStaffProfile(user.getId());
+    }
+
+    private void removeCustomerProfileIfExists(String userId) {
+        if (!customerRepository.existsById(userId)) {
+            return;
+        }
+
+        try {
+            customerRepository.deleteCustomerProfileById(userId);
+            customerRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalStateException("Cannot remove customer profile because it is referenced by business data", ex);
+        }
+    }
+
+    private void removeOwnerProfileIfExists(String userId) {
+        if (!ownerRepository.existsById(userId)) {
+            return;
+        }
+
+        try {
+            ownerRepository.deleteById(userId);
+            ownerRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalStateException("Cannot remove owner profile because it is referenced by business data", ex);
+        }
+    }
 }

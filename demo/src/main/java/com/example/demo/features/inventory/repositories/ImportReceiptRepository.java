@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.inventory.repositories;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,17 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Repository
+public interface ImportReceiptRepository extends JpaRepository<ImportReceipt, String> {
 
+    List<ImportReceipt> findBySupplierId(String supplierId);
+
+    List<ImportReceipt> findByOwnerId(String ownerId);
+
+    List<ImportReceipt> findByOwnerIdAndSupplierId(String ownerId, String supplierId);
 }

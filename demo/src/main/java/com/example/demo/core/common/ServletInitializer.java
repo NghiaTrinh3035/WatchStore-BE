@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.core.common;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,15 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.example.demo.ProjectCnpmApplication;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+public class ServletInitializer extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(ProjectCnpmApplication.class);
 	}
 
 }

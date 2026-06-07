@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.inventory.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,20 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+public class SupplierRequest {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    @NotBlank(message = "Supplier name is required")
+    @Size(max = 100, message = "Supplier name must not exceed 100 characters")
+    private String name;
 
+    @Size(max = 500, message = "Contract info must not exceed 500 characters")
+    private String contractInfo;
+
+    @Size(max = 255, message = "Address must not exceed 255 characters")
+    private String address;
 }

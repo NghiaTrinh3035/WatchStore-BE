@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.vouchers.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,75 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Entity
+@Table(name = "vouchers")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Voucher {
 
+    @Id
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
+
+    @NotBlank(message = "Voucher code is required")
+    @Size(min = 4, max = 50, message = "Voucher code must be between 4 and 50 characters")
+    @Column(name = "code", nullable = false, unique = true, length = 50)
+    private String code;
+
+    @Min(value = 0, message = "Discount percent must not be negative")
+    @Max(value = 100, message = "Discount percent must not exceed 100")
+    @Column(name = "discount_percent")
+    @Builder.Default
+    private Integer discountPercent = 0;
+
+    @Column(name = "usage_count", nullable = false)
+    @Builder.Default
+    private Integer usageCount = 0;
+
+    @NotNull(message = "Valid from date is required")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "valid_from", nullable = false)
+    private Date validFrom;
+
+    @NotNull(message = "Valid to date is required")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "valid_to", nullable = false)
+    private Date validTo;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
+
+    @Min(value = 1, message = "Quantity must be at least 1")
+    @Column(name = "quantity", nullable = false)
+    @Builder.Default
+    private Integer quantity = 1;
+
+    @NotNull(message = "Voucher status is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    @Builder.Default
+    private VoucherStatus status = VoucherStatus.ACTIVE;
+
+
+    @OneToMany(mappedBy = "voucher", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @Builder.Default
+    private List<Order> orders = new ArrayList<>();
 }

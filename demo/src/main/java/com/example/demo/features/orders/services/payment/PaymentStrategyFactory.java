@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.orders.services.payment;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,31 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Component
+public class PaymentStrategyFactory {
 
+    private final Map<PaymentMethod, PaymentStrategy> strategies;
+
+    @Autowired
+    public PaymentStrategyFactory(List<PaymentStrategy> strategyList) {
+        strategies = new EnumMap<>(PaymentMethod.class);
+        for (PaymentStrategy strategy : strategyList) {
+            strategies.put(strategy.getSupportedMethod(), strategy);
+        }
+    }
+
+    public PaymentStrategy getStrategy(PaymentMethod method) {
+        PaymentStrategy strategy = strategies.get(method);
+        if (strategy == null) {
+            throw new IllegalArgumentException("Unsupported payment method: " + method);
+        }
+        return strategy;
+    }
 }

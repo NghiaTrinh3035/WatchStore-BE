@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.communications.repositories;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,41 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
+import java.util.Optional;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Repository
+public interface ChatRepository extends JpaRepository<Chat, String> {
 
+    Optional<Chat> findFirstByCustomerIdAndIsAiHandledFalseAndEndDateIsNullOrderByStartDateDesc(String customerId);
+
+    @Query(
+            value = "SELECT c FROM Chat c JOIN FETCH c.customer cu WHERE c.isAiHandled = false ORDER BY c.startDate DESC",
+            countQuery = "SELECT COUNT(c) FROM Chat c JOIN c.customer cu WHERE c.isAiHandled = false"
+    )
+    Page<Chat> findAllSupportChatsPageWithCustomer(Pageable pageable);
+
+    @Query(
+            value = "SELECT c FROM Chat c JOIN FETCH c.customer cu WHERE c.isAiHandled = false AND c.endDate IS NULL ORDER BY c.startDate DESC",
+            countQuery = "SELECT COUNT(c) FROM Chat c JOIN c.customer cu WHERE c.isAiHandled = false AND c.endDate IS NULL"
+    )
+    Page<Chat> findOpenSupportChatsPageWithCustomer(Pageable pageable);
+
+    @Query(
+            value = "SELECT c FROM Chat c JOIN FETCH c.customer cu WHERE c.isAiHandled = false AND c.endDate IS NOT NULL ORDER BY c.startDate DESC",
+            countQuery = "SELECT COUNT(c) FROM Chat c JOIN c.customer cu WHERE c.isAiHandled = false AND c.endDate IS NOT NULL"
+    )
+    Page<Chat> findClosedSupportChatsPageWithCustomer(Pageable pageable);
+
+    @Query("SELECT c FROM Chat c JOIN FETCH c.customer WHERE c.isAiHandled = false AND c.endDate IS NULL ORDER BY c.startDate DESC")
+    List<Chat> findOpenSupportChatsWithCustomer();
+
+    @Query("SELECT c FROM Chat c JOIN FETCH c.customer WHERE c.isAiHandled = false ORDER BY c.startDate DESC")
+    List<Chat> findAllSupportChatsWithCustomer();
 }

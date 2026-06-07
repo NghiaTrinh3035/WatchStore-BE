@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.communications.repositories;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,25 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
+import java.util.Optional;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Repository
+public interface ReviewRepository extends JpaRepository<Review, String> {
 
+    List<Review> findByProductId(String productId);
+
+    List<Review> findByCustomerId(String customerId);
+
+    Optional<Review> findByCustomerIdAndProductId(String customerId, String productId);
+
+    boolean existsByCustomerIdAndProductId(String customerId, String productId);
+
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :productId")
+    Double findAverageRatingByProductId(@Param("productId") String productId);
 }

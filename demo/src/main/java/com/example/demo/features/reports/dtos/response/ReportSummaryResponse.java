@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.reports.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,22 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+@Builder
+public class ReportSummaryResponse {
 
+    private Date fromDate;
+    private Date toDate;
+    private Long totalRevenue;
+    private Long totalOrders;
+    private Long totalProductsSold;
+    private Long newCustomers;
+    private List<DailyRevenueResponse> revenueByDay;
+    private List<TopSellingProductResponse> topSellingProducts;
 }

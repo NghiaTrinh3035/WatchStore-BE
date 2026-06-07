@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.communications.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,23 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.*;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+public class ReviewRequest {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    @NotBlank(message = "Customer ID is required")
+    private String customerId;
 
+    @NotBlank(message = "Product ID is required")
+    private String productId;
+
+    @NotNull(message = "Rating is required")
+    @Min(value = 1, message = "Rating must be at least 1")
+    @Max(value = 5, message = "Rating must not exceed 5")
+    private Integer rating;
+
+    @Size(max = 1000, message = "Comment must not exceed 1000 characters")
+    private String comment;
 }

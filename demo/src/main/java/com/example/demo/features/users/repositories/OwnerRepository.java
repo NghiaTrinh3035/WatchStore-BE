@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.users.repositories;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,16 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Repository
+public interface OwnerRepository extends JpaRepository<Owner, String> {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+	@Modifying
+	@Query(value = "INSERT INTO owners (id) VALUES (:id) ON DUPLICATE KEY UPDATE id = id", nativeQuery = true)
+	int upsertOwnerProfile(@Param("id") String id);
 }

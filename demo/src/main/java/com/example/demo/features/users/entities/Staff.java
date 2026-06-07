@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.users.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,18 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import lombok.*;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+@Entity
+@Table(name = "staffs")
+@PrimaryKeyJoinColumn(name = "id")
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class Staff extends User {
 }
+

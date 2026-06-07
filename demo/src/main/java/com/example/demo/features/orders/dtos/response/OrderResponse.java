@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.orders.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,48 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+@Builder
+public class OrderResponse {
+
+    private String id;
+    private Date orderDate;
+    private Long totalAmount;
+    private String note;
+    private String shippingAddress;
+    private OrderStatus status;
+    private String customerId;
+    private String customerUsername;
+    private String customerFullName;
+    private String customerPhone;
+    private String customerAddress;
+    private String voucherCode;
+    private List<OrderItemResponse> orderItems;
+    private List<OrderStatusHistoryResponse> timeline;
+
+    private PaymentResponse payment;
+
+    private boolean canCancel;
+    private boolean canRequestCancel;
+    private boolean refundRequired;
+    private String refundMessage;
+    private String cancellationReason;
+    private String cancellationNote;
+
+    @Data
+    @Builder
+    public static class PaymentResponse {
+        private PaymentMethod method;
+        private PaymentStatus status;
+        private Boolean isPaid;
+        private Date paymentDate;
+        private Long amount;
+    }
 
 }

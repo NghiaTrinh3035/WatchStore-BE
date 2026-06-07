@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.warranty.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,47 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+public class WarrantyRequest {
 
+    private String customerId;
+
+    @NotBlank(message = "Customer phone is required")
+    @Size(max = 20)
+    private String customerPhone;
+
+    @NotBlank(message = "Customer name is required")
+    @Size(max = 100)
+    private String customerName;
+
+    @NotBlank(message = "Issue description is required")
+    @Size(max = 1000)
+    private String issueDescription;
+
+    @NotNull(message = "Received date is required")
+    private Date receivedDate;
+
+    @NotNull(message = "Expected return date is required")
+    private Date expectedReturnDate;
+
+    private WarrantyStatus status;
+
+    @Size(max = 1000)
+    private String technicianNote;
+
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private Integer quantity;
+
+    @NotBlank(message = "Product ID is required")
+    private String productId;
 }
+

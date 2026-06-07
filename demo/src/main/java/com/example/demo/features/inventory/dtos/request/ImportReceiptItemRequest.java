@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.inventory.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,22 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+public class ImportReceiptItemRequest {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    @NotBlank(message = "Product ID is required")
+    private String productId;
 
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private Integer quantity;
+
+    @NotNull(message = "Import price is required")
+    @Min(value = 0, message = "Import price must not be negative")
+    private Long importPrice;
 }

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.products.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,41 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+@Builder
+public class ProductResponse {
 
+    private String id;
+    private String brand;
+    private String name;
+    private String description;
+    private Long price;
+    private Integer stockQuantity;
+    private String movementType;
+    private String glassMaterial;
+    private String waterResistance;
+    private String faceSize;
+    private String wireMaterial;
+    private String wireColor;
+    private String caseColor;
+    private String faceColor;
+    private String color;
+    private String size;
+    private String specs;
+    private ProductStatus status;
+    // Legacy fields retained for backward compatibility.
+    private String categoryId;
+    private String categoryName;
+    private List<String> categoryIds;
+    private List<String> categoryNames;
+    private List<ProductCategoryResponse> categories;
+    private List<String> imageUrls;
+    private Double averageRating;
+    private Date updatedAt;
 }

@@ -1,4 +1,5 @@
-package com.example.demo;
+package com.example.demo.features.orders.services.payment;
+
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +63,9 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class ProjectCnpmApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+public interface PaymentStrategy {
+    PaymentMethod getSupportedMethod();
+    PaymentResponse preparePayment(PaymentPrepareRequest request);
+    PaymentStatusResponse verifyPayment(String orderId);
+    void cancelPayment(String orderId);
 }

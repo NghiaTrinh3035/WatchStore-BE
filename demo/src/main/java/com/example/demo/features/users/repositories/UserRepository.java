@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.users.repositories;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,24 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
+import java.util.Optional;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Repository
+public interface UserRepository extends JpaRepository<User, String> {
 
+    Optional<User> findByUsername(String username);
+
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findByPhone(String phone);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
+    List<User> findByRole(UserRole role);
 }

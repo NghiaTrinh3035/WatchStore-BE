@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.vouchers.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,19 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.AssertTrue;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+public class VoucherStatusUpdateRequest {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    private VoucherStatus status;
 
+    private Boolean active;
+
+    @AssertTrue(message = "Either status or active must be provided")
+    public boolean isUpdatable() {
+        return status != null || active != null;
+    }
 }
+

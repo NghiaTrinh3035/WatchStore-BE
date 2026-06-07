@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.products.controllers;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,38 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@RestController
+@RequestMapping("/api/products/{productId}/discussions")
+@RequiredArgsConstructor
+public class ProductDiscussionController {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    private final ProductDiscussionService productDiscussionService;
 
+    @GetMapping
+    public ResponseEntity<PageResponse<ProductDiscussionMessageResponse>> list(
+            @PathVariable String productId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(productDiscussionService.listByProduct(productId, page, pageSize));
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductDiscussionAskResponse> ask(
+            @PathVariable String productId,
+            @Valid @RequestBody ProductDiscussionAskRequest request
+    ) {
+        return ResponseEntity.ok(productDiscussionService.ask(productId, request.getContent()));
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.core.exceptions;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,9 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+public class ResourceNotFoundException extends RuntimeException {
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
 }

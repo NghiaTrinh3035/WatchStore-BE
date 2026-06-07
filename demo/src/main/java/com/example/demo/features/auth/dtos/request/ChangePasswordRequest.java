@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.auth.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,26 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+public class ChangePasswordRequest {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+    @NotBlank(message = "Current password is required")
+    private String oldPassword;
 
+    @NotBlank(message = "New password is required")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+    private String newPassword;
+
+    @NotBlank(message = "Confirm password is required")
+    private String confirmNewPassword;
+
+    @AssertTrue(message = "New password and confirm password do not match")
+    public boolean isPasswordConfirmed() {
+        return newPassword != null && newPassword.equals(confirmNewPassword);
+    }
 }

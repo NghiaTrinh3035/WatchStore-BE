@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.products.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,57 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.*;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+public class ProductRequest {
 
+    @NotBlank(message = "Brand is required")
+    @Size(max = 100)
+    private String brand;
+
+    @NotBlank(message = "Product name is required")
+    @Size(max = 200)
+    private String name;
+
+    private String description;
+
+    @NotNull(message = "Price is required")
+    @Min(value = 0, message = "Price must not be negative")
+    private Long price;
+
+    @NotNull(message = "Stock quantity is required")
+    @Min(value = 0)
+    private Integer stockQuantity;
+
+    private String categoryId;
+
+    private List<@NotBlank(message = "Category ID is required") String> categoryIds;
+
+    @Size(max = 100)
+    private String movementType;
+
+    @Size(max = 100)
+    private String glassMaterial;
+
+    @Size(max = 100)
+    private String waterResistance;
+
+    @Size(max = 50)
+    private String faceSize;
+
+    @Size(max = 100)
+    private String wireMaterial;
+
+    @Size(max = 100)
+    private String wireColor;
+
+    @Size(max = 100)
+    private String caseColor;
+
+    @Size(max = 100)
+    private String faceColor;
 }

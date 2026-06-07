@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.inventory.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,23 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+@Builder
+public class ImportReceiptResponse {
 
+    private String id;
+    private Date importDate;
+    private String note;
+    private String supplierId;
+    private String supplierName;
+    private String ownerId;
+    private List<ImportReceiptItemResponse> items;
+    private Long totalAmount;
+    private Long totalCost;
 }

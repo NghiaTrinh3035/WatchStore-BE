@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.inventory.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,24 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+public class ImportReceiptRequest {
 
+    @NotBlank(message = "Supplier ID is required")
+    private String supplierId;
+
+    @Size(max = 500, message = "Note must not exceed 500 characters")
+    private String note;
+
+    @NotEmpty(message = "Import items are required")
+    @Valid
+    private List<ImportReceiptItemRequest> items;
 }

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.users.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,26 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Data
+public class CustomerWarrantyRequest {
 
+    @NotBlank(message = "Order ID is required")
+    private String orderId;
+
+    @NotBlank(message = "Order item ID is required")
+    private String orderItemId;
+
+    @NotBlank(message = "Issue description is required")
+    @Size(max = 1000)
+    private String description;
+
+    @NotNull
+    private List<String> images;
 }

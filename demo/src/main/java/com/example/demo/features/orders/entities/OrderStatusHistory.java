@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.orders.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,43 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.Date;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Entity
+@Table(name = "order_status_history")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class OrderStatusHistory {
 
+    @Id
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private OrderStatus status;
+
+    @Column(name = "note", length = 500)
+    private String note;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "changed_at", updatable = false)
+    private Date changedAt;
+
+    @Column(name = "changed_by", length = 100)
+    private String changedBy;
 }

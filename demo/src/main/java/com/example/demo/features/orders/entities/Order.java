@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.orders.entities;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,70 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Entity
+@Table(name = "orders")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Order {
 
+    @Id
+    @UuidGenerator
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "order_date", updatable = false)
+    private Date orderDate;
+
+    @Min(value = 0, message = "Total amount must not be negative")
+    @Column(name = "total_amount", columnDefinition = "BIGINT DEFAULT 0")
+    @Builder.Default
+    private Long totalAmount = 0L;
+
+    @Size(max = 500, message = "Note must not exceed 500 characters")
+    @Column(name = "note", length = 500)
+    private String note;
+
+    @Size(max = 255, message = "Shipping address must not exceed 255 characters")
+    @Column(name = "shipping_address", length = 255)
+    private String shippingAddress;
+
+    @NotNull(message = "Order status is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    @Builder.Default
+    private OrderStatus status = OrderStatus.PENDING;
+
+    @NotNull(message = "Customer is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucher_id")
+    private Voucher voucher;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Payment payment;
+
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @Builder.Default
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

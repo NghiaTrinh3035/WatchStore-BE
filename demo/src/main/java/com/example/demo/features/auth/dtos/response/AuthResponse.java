@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.auth.dtos.response;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,19 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Builder;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+@Builder
+public class AuthResponse {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+    private String message;
+    private String userId;
+    private String username;
+    private String email;
+    private UserRole role;
+    private String tokenType;
+    private String accessToken;
+    private long expiresInSeconds;
 }

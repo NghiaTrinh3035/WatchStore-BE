@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.communications.repositories;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,22 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+import java.util.List;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
+@Repository
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
 
+    List<ChatMessage> findByChatIdOrderByCreatedAtAsc(String chatId);
+
+    List<ChatMessage> findByChatCustomerIdOrderByCreatedAtAsc(String customerId);
+
+    List<ChatMessage> findByChatCustomerIdAndChatIsAiHandledTrueOrderByCreatedAtDesc(
+            String customerId,
+            Pageable pageable
+    );
 }
+

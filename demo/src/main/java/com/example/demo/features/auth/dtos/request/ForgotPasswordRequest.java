@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.features.auth.dtos.request;
 
 
 import com.example.demo.features.communications.controllers.*;
@@ -62,14 +62,14 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
-@SpringBootApplication
-public class ProjectCnpmApplication {
+@Data
+public class ForgotPasswordRequest {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectCnpmApplication.class, args);
-	}
-
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    private String email;
 }
