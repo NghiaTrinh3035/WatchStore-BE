@@ -70,11 +70,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.demo.features.orders.events.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -116,12 +115,8 @@ public class OrderService {
     private final AccessControlService accessControlService;
     private final CartService cartService;
     private final OrderStatusHistoryRepository historyRepository;
-    private final NotificationService notificationService;
-    private final JavaMailSender mailSender;
     private final ObjectMapper objectMapper;
-
-    @Value("${app.mail.from:${spring.mail.username:}}")
-    private String mailFromAddress;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${order.cancel.self-window-hours:24}")
     private long selfCancelWindowHours;
@@ -186,19 +181,8 @@ public class OrderService {
         order.setPayment(payment);
 
         Order savedOrder = orderRepository.save(order);
-        appendHistory(savedOrder, OrderStatus.PENDING, "Đơn hàng được tạo", customer.getUsername());
 
-        try {
-            notificationService.sendOrderSuccessNotification(customer, savedOrder.getId());
-        } catch (Exception ex) {
-            log.warn("Order success notification failed for order {}", savedOrder.getId(), ex);
-        }
-
-        try {
-            notificationService.notifyStoreAboutNewOrder(customer, savedOrder.getId());
-        } catch (Exception ex) {
-            log.warn("Store notification for new order {} failed", savedOrder.getId(), ex);
-        }
+        eventPublisher.publishEvent(new OrderCreatedEvent(this, savedOrder, customer.getUsername()));
 
         return toOrderResponse(savedOrder);
     }
@@ -219,24 +203,7 @@ public class OrderService {
         order.setStatus(status);
         order = orderRepository.save(order);
 
-        appendHistory(order, status, "Cập nhật bởi nhân viên", getCurrentUsername());
-
-        try {
-            String senderId = accessControlService.getCurrentUserOrThrow().getId();
-            switch (status) {
-                case CONFIRMED -> notificationService.sendOrderConfirmedNotification(senderId, order.getCustomer(), order.getId());
-                case DELIVERED -> notificationService.sendOrderDeliveredNotification(senderId, order.getCustomer(), order.getId());
-                default -> notificationService.sendOrderStatusUpdateNotification(
-                        senderId,
-                        order.getCustomer(),
-                        order.getId(),
-                        null,
-                        status.name()
-                );
-            }
-        } catch (Exception ex) {
-            log.warn("Order status notification failed for order {}", order.getId(), ex);
-        }
+        eventPublisher.publishEvent(new OrderStatusChangedEvent(this, order, status, "Cập nhật bởi nhân viên", getCurrentUsername()));
 
         return toOrderResponse(order);
     }
@@ -399,27 +366,8 @@ public class OrderService {
         order = orderRepository.save(order);
 
         String historyNote = buildCancellationHistoryNote(reason, note, restockIssue);
-        appendHistory(order, OrderStatus.CANCELLED, historyNote, getCurrentUsername());
 
-        try {
-            notificationService.notifyCustomerAboutOrderCancellation(order.getCustomer(), order.getId(), reason, paidOrder);
-        } catch (Exception ex) {
-            log.warn("Customer cancel notification failed for order {}", order.getId(), ex);
-        }
-
-        try {
-            notificationService.notifyStoreAboutCustomerCancellation(
-                    order.getCustomer(),
-                    order.getId(),
-                    reason,
-                    paidOrder,
-                    restockIssue
-            );
-        } catch (Exception ex) {
-            log.warn("Store cancel notification failed for order {}", order.getId(), ex);
-        }
-
-        sendCancellationEmailAsync(order, reason, note, paidOrder, restockIssue);
+        eventPublisher.publishEvent(new OrderCancelledEvent(this, order, reason, note, paidOrder, restockIssue, getCurrentUsername(), historyNote));
 
         return toOrderResponse(order);
     }
@@ -445,13 +393,7 @@ public class OrderService {
             historyNote += "; Ghi chú: " + note;
         }
 
-        appendHistory(order, order.getStatus(), historyNote, getCurrentUsername());
-
-        try {
-            notificationService.notifyStoreAboutCancellationRequest(order.getCustomer(), order.getId(), reason, note);
-        } catch (Exception ex) {
-            log.warn("Store cancellation request notification failed for order {}", order.getId(), ex);
-        }
+        eventPublisher.publishEvent(new OrderCancelRequestedEvent(this, order, reason, note, getCurrentUsername(), historyNote));
 
         return toOrderResponse(order);
     }
@@ -672,67 +614,5 @@ public class OrderService {
         return noteIndex >= 0 ? body.substring(0, noteIndex).trim() : body;
     }
 
-    private void appendHistory(Order order, OrderStatus status, String note, String changedBy) {
-        OrderStatusHistory history = OrderStatusHistory.builder()
-                .order(order)
-                .status(status)
-                .note(note)
-                .changedBy(changedBy)
-                .build();
-        historyRepository.save(history);
-    }
-
-    private void sendCancellationEmailAsync(
-            Order order,
-            String reason,
-            String note,
-            boolean paidOrder,
-            boolean restockIssue
-    ) {
-        String email = order.getCustomer() != null ? order.getCustomer().getEmail() : null;
-        if (!StringUtils.hasText(email)) {
-            return;
-        }
-
-        String customerName = StringUtils.hasText(order.getCustomer().getFullName())
-                ? order.getCustomer().getFullName()
-                : order.getCustomer().getUsername();
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        if (StringUtils.hasText(mailFromAddress)) {
-            message.setFrom(mailFromAddress.trim());
-        }
-        message.setTo(email.trim());
-        message.setSubject("Xác nhận hủy đơn hàng #" + order.getId());
-
-        StringBuilder body = new StringBuilder();
-        body.append("Xin chào ").append(customerName).append(",\n\n")
-                .append("Đơn hàng #").append(order.getId()).append(" đã được hủy thành công.\n")
-                .append("Lý do: ").append(reason).append(".\n");
-
-        if (StringUtils.hasText(note)) {
-            body.append("Ghi chú: ").append(note).append("\n");
-        }
-        if (paidOrder) {
-            body.append(REFUND_PROCESSING_MESSAGE).append("\n");
-        }
-        if (restockIssue) {
-            body.append("Lưu ý: hệ thống đang xử lý sự cố hoàn kho, nhân viên sẽ kiểm tra thủ công.\n");
-        }
-
-        body.append("\nTrân trọng,\nChronolux Team");
-        message.setText(body.toString());
-
-        new Thread(() -> {
-            try {
-                mailSender.send(message);
-                log.info("Cancellation email sent to {} for order {}", email, order.getId());
-            } catch (MailException ex) {
-                log.warn("Failed to send cancellation email to {} for order {}", email, order.getId(), ex);
-            } catch (Exception ex) {
-                log.warn("Unexpected error while sending cancellation email to {} for order {}", email, order.getId(), ex);
-            }
-        }, "order-cancel-email-sender").start();
-    }
 }
 

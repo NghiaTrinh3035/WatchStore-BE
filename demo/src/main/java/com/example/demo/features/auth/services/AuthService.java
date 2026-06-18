@@ -62,6 +62,9 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
+import com.example.demo.features.auth.events.PasswordResetEvent;
+import com.example.demo.features.auth.events.UserRegisteredEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,8 +88,8 @@ public class AuthService {
     private final EmailOtpService emailOtpService;
     private final JwtService jwtService;
     private final UserProfileService userProfileService;
-    private final NotificationService notificationService;
     private final CustomerRepository customerRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final Map<String, PendingRegistration> pendingRegistrations = new ConcurrentHashMap<>();
 
     public OtpResponse register(RegisterRequest request) {
@@ -148,7 +151,7 @@ public class AuthService {
 
         User savedUser = userRepository.save(Objects.requireNonNull(customer));
         pendingRegistrations.remove(emailKey);
-        notificationService.sendRegistrationSuccessNotification(savedUser);
+        eventPublisher.publishEvent(new UserRegisteredEvent(this, savedUser));
 
         return Optional.of(buildAuthResponse(savedUser, "Register successful"));
     }
@@ -203,11 +206,7 @@ public class AuthService {
         User user = optionalUser.get();
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
-        try {
-            notificationService.sendPasswordResetSuccessNotification(user);
-        } catch (Exception ex) {
-            log.warn("Password reset notification failed for user {}", user.getId(), ex);
-        }
+        eventPublisher.publishEvent(new PasswordResetEvent(this, user));
         return true;
     }
 

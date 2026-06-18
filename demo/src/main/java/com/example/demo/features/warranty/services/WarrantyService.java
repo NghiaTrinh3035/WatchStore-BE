@@ -62,8 +62,9 @@ import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
 
+import com.example.demo.features.warranty.events.WarrantyStatusUpdatedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -81,8 +82,8 @@ public class WarrantyService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
-    private final NotificationRepository notificationRepository;
     private final AccessControlService accessControlService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public WarrantyResponse createWarrantyRequest(WarrantyRequest request) {
         accessControlService.requirePrivilegedRole();
@@ -146,7 +147,7 @@ public class WarrantyService {
         warranty.setProduct(selectedItem.getProduct());
 
         Warranty saved = warrantyRepository.save(warranty);
-        notifyCustomerIfPossible(saved, currentUser, saved.getStatus());
+        eventPublisher.publishEvent(new WarrantyStatusUpdatedEvent(this, saved, currentUser, saved.getStatus()));
         return DtoMapper.toWarrantyResponse(saved);
     }
 
@@ -209,7 +210,7 @@ public class WarrantyService {
         warranty.setRejectReason(processedRejectReason);
 
         Warranty saved = warrantyRepository.save(warranty);
-        notifyCustomerIfPossible(saved, processor, request.getStatus());
+        eventPublisher.publishEvent(new WarrantyStatusUpdatedEvent(this, saved, processor, request.getStatus()));
         return DtoMapper.toWarrantyResponse(saved);
     }
 
@@ -246,31 +247,6 @@ public class WarrantyService {
         return "Rejected by " + actor + ": " + request.getRejectReason().trim();
     }
 
-    private void notifyCustomerIfPossible(Warranty warranty, User sender, WarrantyStatus status) {
-        if (warranty.getCustomerId() == null || warranty.getCustomerId().isBlank()) {
-            return;
-        }
-
-        Optional<Customer> customerOpt = customerRepository.findById(warranty.getCustomerId());
-        if (customerOpt.isEmpty()) {
-            return;
-        }
-
-        String content = status == WarrantyStatus.REJECTED
-                ? "Your warranty request has been rejected. Please check details from support."
-                : "Your warranty request has been updated to status: " + status;
-
-        Notification notification = Notification.builder()
-                .title("Warranty request update")
-                .content(content)
-                .type(NotificationType.WARRANTY)
-                .directUrl("/warranty")
-                .sender(sender)
-                .receiver(customerOpt.get())
-                .build();
-
-        notificationRepository.save(notification);
-    }
 
     private String normalizeSearchText(String value) {
         if (value == null || value.isBlank()) {
