@@ -98,12 +98,8 @@ INSERT IGNORE INTO order_status_history (id, order_id, status, note, changed_at,
 ('abababab-abab-abab-abab-ababababab02', '99999999-9999-9999-9999-999999999002', 'PENDING',   'Đơn mới tạo',     '2026-03-09 11:00:00', 'cus_binh');
 
 INSERT IGNORE INTO payments (id, payment_date, amount, method, status, is_paid, order_id) VALUES
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb001', '2026-03-08 10:05:00', 4680000, 'BANK_TRANSFER', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999001'),
+('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb001', '2026-03-08 10:05:00', 4680000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999001'),
 ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb002', '2026-03-09 11:10:00', 3000000, 'COD',           'RECEIVED',  0, '99999999-9999-9999-9999-999999999002');
-
-INSERT IGNORE INTO shippings (id, tracking_number, tracking_date, carrier_name, carrier_phone, estimated_delivery, order_id) VALUES
-('cccccccc-cccc-cccc-cccc-ccccccccc001', 'TRACK-0001', '2026-03-08 14:00:00', 'GHN',  '0912345678', '2026-03-10 18:00:00', '99999999-9999-9999-9999-999999999001'),
-('cccccccc-cccc-cccc-cccc-ccccccccc002', 'TRACK-0002', '2026-03-09 15:00:00', 'GHTK', '0987654321', '2026-03-11 18:00:00', '99999999-9999-9999-9999-999999999002');
 
 INSERT IGNORE INTO warranties (
     id, customer_phone, customer_name, issue_description,
@@ -177,6 +173,53 @@ INSERT INTO staffs (id) VALUES
 
 INSERT INTO owners (id) VALUES
     ('11111111-1111-1111-1111-111111111302');
+
+-- =========================================================
+-- 1.1) THÊM 20 CUSTOMER MỚI (phân bổ cho product 012-031)
+-- =========================================================
+INSERT INTO users (id, username, password, full_name, email, phone, address, gender, role, is_active, created_at) VALUES
+                                                                                                                      ('11111111-1111-1111-1111-111111111111', 'cus_hieu',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Lê Minh Hiếu',      'hieu.customer@example.com',   '0901000011', 'Hà Nội',      'MALE',   'CUSTOMER', 1, '2026-04-02 08:00:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111112', 'cus_mai',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Nguyễn Trúc Mai',   'mai.customer@example.com',    '0901000012', 'TP.HCM',      'FEMALE', 'CUSTOMER', 1, '2026-04-02 08:05:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111113', 'cus_khoa2',  '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Phan Đức Khoa',     'khoa2.customer@example.com',  '0901000013', 'Đà Nẵng',     'MALE',   'CUSTOMER', 1, '2026-04-02 08:10:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111114', 'cus_nhi',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Trần Bảo Nhi',      'nhi.customer@example.com',    '0901000014', 'Cần Thơ',     'FEMALE', 'CUSTOMER', 1, '2026-04-02 08:15:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111115', 'cus_tung',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Đặng Hoàng Tùng',   'tung.customer@example.com',   '0901000015', 'Hải Phòng',   'MALE',   'CUSTOMER', 1, '2026-04-02 08:20:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111116', 'cus_linh2',  '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Vũ Mỹ Linh',        'linh2.customer@example.com',  '0901000016', 'Huế',         'FEMALE', 'CUSTOMER', 1, '2026-04-02 08:25:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111117', 'cus_quan',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Ngô Minh Quân',     'quan.customer@example.com',   '0901000017', 'Quảng Ninh',  'MALE',   'CUSTOMER', 1, '2026-04-02 08:30:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111118', 'cus_ha2',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Đỗ Thu Hà',         'ha2.customer@example.com',    '0901000018', 'Nha Trang',   'FEMALE', 'CUSTOMER', 1, '2026-04-02 08:35:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111119', 'cus_viet',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Bùi Quốc Việt',     'viet.customer@example.com',   '0901000019', 'Bình Dương',  'MALE',   'CUSTOMER', 1, '2026-04-02 08:40:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111120', 'cus_anhthu', '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Lý Anh Thư',        'anhthu.customer@example.com', '0901000020', 'Đồng Nai',    'FEMALE', 'CUSTOMER', 1, '2026-04-02 08:45:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111121', 'cus_son',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Trịnh Thanh Sơn',   'son.customer@example.com',    '0901000021', 'Nam Định',    'MALE',   'CUSTOMER', 1, '2026-04-02 08:50:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111122', 'cus_yen',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Phạm Hải Yến',      'yen.customer@example.com',    '0901000022', 'Vĩnh Phúc',   'FEMALE', 'CUSTOMER', 1, '2026-04-02 08:55:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111123', 'cus_duc',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Nguyễn Minh Đức',   'duc.customer@example.com',    '0901000023', 'Thanh Hóa',   'MALE',   'CUSTOMER', 1, '2026-04-02 09:00:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111124', 'cus_thao',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Hoàng Ngọc Thảo',   'thao.customer@example.com',   '0901000024', 'Nghệ An',     'FEMALE', 'CUSTOMER', 1, '2026-04-02 09:05:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111125', 'cus_kiet2',  '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Lâm Đức Kiệt',      'kiet2.customer@example.com',  '0901000025', 'Bắc Ninh',    'MALE',   'CUSTOMER', 1, '2026-04-02 09:10:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111126', 'cus_phuong', '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Nguyễn Thu Phương', 'phuong.customer@example.com', '0901000026', 'Hưng Yên',    'FEMALE', 'CUSTOMER', 1, '2026-04-02 09:15:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111127', 'cus_nam2',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Đoàn Quốc Nam',     'nam2.customer@example.com',   '0901000027', 'Phú Thọ',     'MALE',   'CUSTOMER', 1, '2026-04-02 09:20:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111128', 'cus_huong',  '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Trần Thu Hương',    'huong.customer@example.com',  '0901000028', 'Bắc Giang',   'FEMALE', 'CUSTOMER', 1, '2026-04-02 09:25:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111129', 'cus_bao',    '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Phùng Gia Bảo',     'bao.customer@example.com',    '0901000029', 'Thái Bình',   'MALE',   'CUSTOMER', 1, '2026-04-02 09:30:00'),
+                                                                                                                      ('11111111-1111-1111-1111-111111111130', 'cus_tram',   '$2a$12$JRXCc5f2OdjTBCwLotOgle1MLIzpuN7z/mlZoT5EO1LTdrmYdtDuu', 'Lê Ngọc Trâm',      'tram.customer@example.com',   '0901000030', 'Quảng Nam',   'FEMALE', 'CUSTOMER', 1, '2026-04-02 09:35:00');
+
+INSERT INTO customers (id) VALUES
+                               ('11111111-1111-1111-1111-111111111111'),
+                               ('11111111-1111-1111-1111-111111111112'),
+                               ('11111111-1111-1111-1111-111111111113'),
+                               ('11111111-1111-1111-1111-111111111114'),
+                               ('11111111-1111-1111-1111-111111111115'),
+                               ('11111111-1111-1111-1111-111111111116'),
+                               ('11111111-1111-1111-1111-111111111117'),
+                               ('11111111-1111-1111-1111-111111111118'),
+                               ('11111111-1111-1111-1111-111111111119'),
+                               ('11111111-1111-1111-1111-111111111120'),
+                               ('11111111-1111-1111-1111-111111111121'),
+                               ('11111111-1111-1111-1111-111111111122'),
+                               ('11111111-1111-1111-1111-111111111123'),
+                               ('11111111-1111-1111-1111-111111111124'),
+                               ('11111111-1111-1111-1111-111111111125'),
+                               ('11111111-1111-1111-1111-111111111126'),
+                               ('11111111-1111-1111-1111-111111111127'),
+                               ('11111111-1111-1111-1111-111111111128'),
+                               ('11111111-1111-1111-1111-111111111129'),
+                               ('11111111-1111-1111-1111-111111111130');
 -- =========================================================
 -- 2) CATEGORIES (gốc: 3 → thêm 7 → tổng 10)
 -- =========================================================
@@ -289,6 +332,61 @@ INSERT INTO product_images (id, image_url, public_id, alt_text, is_thumbnail, pr
                                                                                               ('45454545-4545-4545-4545-454545454013', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775285306/123_tuglos.jpg', 'products/p2-side', 'Casio MTP-VT01 - Side',0, '44444444-4444-4444-4444-444444444002');
 
 -- =========================================================
+-- 6.1) PRODUCTS BỔ SUNG (thêm 20 mẫu, chia theo 6 hãng cao cấp)
+-- =========================================================
+INSERT INTO products (
+    id, brand, name, description, price, stock_quantity,
+    movement_type, glass_material, water_resistance, face_size,
+    wire_material, wire_color, case_color, face_color,
+    status, updated_at, category_id
+) VALUES
+      ('44444444-4444-4444-4444-444444444012', 'Rolex',     'Rolex Submariner Date',            'Biểu tượng diver sang trọng, độ hoàn thiện cao',            285000000, 6, 'Automatic', 'Sapphire', '300m', '41mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Đen',  'ACTIVE', '2026-04-02 09:00:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444013', 'Rolex',     'Rolex Datejust 36',               'Thiết kế kinh điển, phù hợp công sở cao cấp',              248000000, 7, 'Automatic', 'Sapphire', '100m', '36mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Xanh', 'ACTIVE', '2026-04-02 09:10:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444014', 'Rolex',     'Rolex GMT-Master II',             'Mẫu GMT cao cấp dành cho người thường xuyên di chuyển',    332000000, 5, 'Automatic', 'Sapphire', '100m', '40mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Đen',  'ACTIVE', '2026-04-02 09:20:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444015', 'Rolex',     'Rolex Oyster Perpetual 31',       'Thanh lịch tối giản, phù hợp cổ tay nhỏ',                  198000000, 8, 'Automatic', 'Sapphire', '100m', '31mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 09:30:00', '22222222-2222-2222-2222-222222222005'),
+      ('44444444-4444-4444-4444-444444444016', 'Cartier',   'Cartier Tank Must',               'Dáng chữ nhật biểu tượng của Cartier',                     128000000, 8, 'Quartz',    'Sapphire', '30m',  '33mm',   'Da',            'Đen',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 09:40:00', '22222222-2222-2222-2222-222222222010'),
+      ('44444444-4444-4444-4444-444444444017', 'Cartier',   'Cartier Santos de Cartier',       'Phong cách thể thao-lịch lãm đặc trưng',                   219000000, 6, 'Automatic', 'Sapphire', '100m', '39.8mm', 'Thép không gỉ', 'Bạc',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 09:50:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444018', 'Cartier',   'Cartier Ballon Bleu 33',          'Thiết kế nữ cao cấp, mặt số thanh thoát',                  172000000, 7, 'Automatic', 'Sapphire', '30m',  '33mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 10:00:00', '22222222-2222-2222-2222-222222222005'),
+      ('44444444-4444-4444-4444-444444444019', 'Cartier',   'Cartier Pasha de Cartier',        'Mẫu cao cấp cá tính với crown cap đặc trưng',             236000000, 5, 'Automatic', 'Sapphire', '100m', '41mm',   'Da',            'Nâu',  'Bạc',  'Đen',  'ACTIVE', '2026-04-02 10:10:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444020', 'Omega',     'Omega Seamaster Diver 300M',      'Diver huyền thoại của Omega, bền bỉ và sang trọng',        162000000, 7, 'Automatic', 'Sapphire', '300m', '42mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Xanh', 'ACTIVE', '2026-04-02 10:20:00', '22222222-2222-2222-2222-222222222004'),
+      ('44444444-4444-4444-4444-444444444021', 'Omega',     'Omega Speedmaster Moonwatch',     'Chronograph biểu tượng gắn với lịch sử không gian',        189000000, 6, 'Manual',    'Hesalite', '50m',  '42mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Đen',  'ACTIVE', '2026-04-02 10:30:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444022', 'Omega',     'Omega Constellation 29',          'Dòng nữ cao cấp, thiết kế tinh xảo',                       141000000, 8, 'Quartz',    'Sapphire', '50m',  '29mm',   'Thép không gỉ', 'Vàng', 'Vàng', 'Trắng', 'ACTIVE', '2026-04-02 10:40:00', '22222222-2222-2222-2222-222222222005'),
+      ('44444444-4444-4444-4444-444444444023', 'Longines',  'Longines Master Collection',      'Phong cách cổ điển, hoàn thiện tinh tế',                  69000000,  10, 'Automatic', 'Sapphire', '30m',  '40mm',   'Da',            'Nâu',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 10:50:00', '22222222-2222-2222-2222-222222222001'),
+      ('44444444-4444-4444-4444-444444444024', 'Longines',  'Longines HydroConquest',          'Diver thanh lịch, cân bằng thể thao và sang trọng',        54000000,  11, 'Automatic', 'Sapphire', '300m', '41mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Đen',  'ACTIVE', '2026-04-02 11:00:00', '22222222-2222-2222-2222-222222222004'),
+      ('44444444-4444-4444-4444-444444444025', 'Longines',  'Longines DolceVita',              'Mẫu dresswatch phong cách Art Deco',                       48000000,  9, 'Quartz',    'Sapphire', '30m',  '32mm',   'Da',            'Đen',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 11:10:00', '22222222-2222-2222-2222-222222222010'),
+      ('44444444-4444-4444-4444-444444444026', 'TAG Heuer', 'TAG Heuer Carrera Calibre 5',     'Thiết kế đua xe lịch lãm, dễ đeo hàng ngày',               82000000,  9, 'Automatic', 'Sapphire', '100m', '41mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Đen',  'ACTIVE', '2026-04-02 11:20:00', '22222222-2222-2222-2222-222222222007'),
+      ('44444444-4444-4444-4444-444444444027', 'TAG Heuer', 'TAG Heuer Aquaracer Professional 300', 'Diver chuyên nghiệp, độ bền cao',                    76000000,  10, 'Automatic', 'Sapphire', '300m', '43mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Xanh', 'ACTIVE', '2026-04-02 11:30:00', '22222222-2222-2222-2222-222222222004'),
+      ('44444444-4444-4444-4444-444444444028', 'TAG Heuer', 'TAG Heuer Monaco',                 'Thiết kế vuông biểu tượng, phong cách vintage',            99000000,  7, 'Automatic', 'Sapphire', '100m', '39mm',   'Da',            'Đen',  'Bạc',  'Xanh', 'ACTIVE', '2026-04-02 11:40:00', '22222222-2222-2222-2222-222222222010'),
+      ('44444444-4444-4444-4444-444444444029', 'Rado',      'Rado Captain Cook',                'Thiết kế thể thao cao cấp với chất liệu bền nhẹ',          67000000,  11, 'Automatic', 'Sapphire', '300m', '42mm',   'Thép không gỉ', 'Bạc',  'Bạc',  'Xanh', 'ACTIVE', '2026-04-02 11:50:00', '22222222-2222-2222-2222-222222222004'),
+      ('44444444-4444-4444-4444-444444444030', 'Rado',      'Rado True Square',                 'Thiết kế vuông ceramic hiện đại',                           72000000,  8, 'Automatic', 'Sapphire', '50m',  '38mm',   'Ceramic',       'Đen',  'Đen',  'Đen',  'ACTIVE', '2026-04-02 12:00:00', '22222222-2222-2222-2222-222222222010'),
+      ('44444444-4444-4444-4444-444444444031', 'Rado',      'Rado Centrix Automatic',           'Mẫu dresswatch cao cấp phối ceramic và thép',              58000000,  10, 'Automatic', 'Sapphire', '50m',  '39mm',   'Ceramic',       'Đen',  'Bạc',  'Trắng', 'ACTIVE', '2026-04-02 12:10:00', '22222222-2222-2222-2222-222222222005');
+
+-- =========================================================
+-- 6.2) PRODUCT_IMAGES BỔ SUNG (1 ảnh chính / sản phẩm)
+-- =========================================================
+INSERT INTO product_images (id, image_url, public_id, alt_text, is_thumbnail, product_id) VALUES
+                                                                                              ('45454545-4545-4545-4545-454545454014', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775406805/Rolex_Submariner_Date_126610LV-0002_2_o4ocay.jpg', 'products/p12-main', 'Rolex Submariner Date',                 1, '44444444-4444-4444-4444-444444444012'),
+                                                                                              ('45454545-4545-4545-4545-454545454015', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775406844/dong-ho-rolex-datejust-36-126233-0026-oystersteel-va-vang-vang-topwatch.vn__hiarhi.webp', 'products/p13-main', 'Rolex Datejust 36',                    1, '44444444-4444-4444-4444-444444444013'),
+                                                                                              ('45454545-4545-4545-4545-454545454016', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775406872/Rolex-GMT-Master-II-126713GRNR-0001_oaudnf.jpg', 'products/p14-main', 'Rolex GMT-Master II',                  1, '44444444-4444-4444-4444-444444444014'),
+                                                                                              ('45454545-4545-4545-4545-454545454017', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775406928/images_o76nnd.jpg', 'products/p15-main', 'Rolex Oyster Perpetual 31',            1, '44444444-4444-4444-4444-444444444015'),
+                                                                                              ('45454545-4545-4545-4545-454545454018', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775406940/CRWSTA0054_pvwmol.jpg', 'products/p16-main', 'Cartier Tank Must',                    1, '44444444-4444-4444-4444-444444444016'),
+                                                                                              ('45454545-4545-4545-4545-454545454019', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775406994/images_hexfvx.jpg', 'products/p17-main', 'Cartier Santos de Cartier',            1, '44444444-4444-4444-4444-444444444017'),
+                                                                                              ('45454545-4545-4545-4545-454545454020', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407029/CRW2BB0023_1_cnfc4g.webp', 'products/p18-main', 'Cartier Ballon Bleu 33',               1, '44444444-4444-4444-4444-444444444018'),
+                                                                                              ('45454545-4545-4545-4545-454545454021', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407072/image_fdvl7z.png', 'products/p19-main', 'Cartier Pasha de Cartier',             1, '44444444-4444-4444-4444-444444444019'),
+                                                                                              ('45454545-4545-4545-4545-454545454022', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407073/z2545704360253_7780e9664d317103a420878fed4116e2_bwwr09.jpg', 'products/p20-main', 'Omega Seamaster Diver 300M',          1, '44444444-4444-4444-4444-444444444020'),
+                                                                                              ('45454545-4545-4545-4545-454545454023', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407075/images_1_wwaqu6.jpg', 'products/p21-main', 'Omega Speedmaster Moonwatch',          1, '44444444-4444-4444-4444-444444444021'),
+                                                                                              ('45454545-4545-4545-4545-454545454024', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407092/images_2_vcevfd.jpg', 'products/p22-main', 'Omega Constellation 29',              1, '44444444-4444-4444-4444-444444444022'),
+                                                                                              ('45454545-4545-4545-4545-454545454025', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407104/images_3_qfnwtj.jpg', 'products/p23-main', 'Longines Master Collection',          1, '44444444-4444-4444-4444-444444444023'),
+                                                                                              ('45454545-4545-4545-4545-454545454026', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407113/longines-l3-782-3-56-7-1_1726213126_aqwap1.jpg', 'products/p24-main', 'Longines HydroConquest',              1, '44444444-4444-4444-4444-444444444024'),
+                                                                                              ('45454545-4545-4545-4545-454545454027', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407130/L5.255.0.71.2_Desktop_1_anwd1j.jpg', 'products/p25-main', 'Longines DolceVita',                  1, '44444444-4444-4444-4444-444444444025'),
+                                                                                              ('45454545-4545-4545-4545-454545454028', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407151/images_4_akml3i.jpg', 'products/p26-main', 'TAG Heuer Carrera Calibre 5',         1, '44444444-4444-4444-4444-444444444026'),
+                                                                                              ('45454545-4545-4545-4545-454545454029', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407198/images_5_qvdlo5.jpg', 'products/p27-main', 'TAG Heuer Aquaracer Professional 300', 1, '44444444-4444-4444-4444-444444444027'),
+                                                                                              ('45454545-4545-4545-4545-454545454030', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407200/images_6_xbkveb.jpg', 'products/p28-main', 'TAG Heuer Monaco',                    1, '44444444-4444-4444-4444-444444444028'),
+                                                                                              ('45454545-4545-4545-4545-454545454031', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407202/r32138303_1706515282_zkuidx.jpg', 'products/p29-main', 'Rado Captain Cook',                   1, '44444444-4444-4444-4444-444444444029'),
+                                                                                              ('45454545-4545-4545-4545-454545454032', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407229/dong-ho-rado-r27086162-1-_1664622148_kkh9wa.jpg', 'products/p30-main', 'Rado True Square',                    1, '44444444-4444-4444-4444-444444444030'),
+                                                                                              ('45454545-4545-4545-4545-454545454033', 'https://res.cloudinary.com/dfz0c8xcx/image/upload/v1775407231/r30013302_1706525821_tzjsev.jpg', 'products/p31-main', 'Rado Centrix Automatic',             1, '44444444-4444-4444-4444-444444444031');
+
+-- =========================================================
 -- 7) CARTS (gốc: 2 → thêm 8 → tổng 10)
 -- =========================================================
 INSERT INTO carts (id, total_amount, customer_id) VALUES
@@ -328,6 +426,29 @@ INSERT INTO orders (id, order_date, total_amount, note, shipping_address, status
                                                                                                                ('99999999-9999-9999-9999-999999999010', '2026-03-17 15:00:00',  2400000, 'Quà sinh nhật',      'Đà Nẵng',  'CANCELLED',  '11111111-1111-1111-1111-111111111102', NULL),
                                                                                                                ('99999999-9999-9999-9999-999999999011', '2026-03-18 09:00:00',  8800000, 'Đơn mua chung',      'TP.HCM',   'CONFIRMED',  '11111111-1111-1111-1111-111111111104', '66666666-6666-6666-6666-666666666004');
 
+-- Bổ sung 20 đơn hàng mới cho 20 customer mới (mỗi customer 1 product mới)
+INSERT INTO orders (id, order_date, total_amount, note, shipping_address, status, customer_id, voucher_id) VALUES
+                                                                                                               ('99999999-9999-9999-9999-999999999012', '2026-04-03 09:00:00', 285000000, 'Khách VIP đặt online',       'Hà Nội',      'CONFIRMED', '11111111-1111-1111-1111-111111111111', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999013', '2026-04-03 09:10:00', 248000000, 'Yêu cầu đóng gói quà',       'TP.HCM',      'CONFIRMED', '11111111-1111-1111-1111-111111111112', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999014', '2026-04-03 09:20:00', 332000000, 'Giao giờ hành chính',         'Đà Nẵng',     'PENDING',   '11111111-1111-1111-1111-111111111113', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999015', '2026-04-03 09:30:00', 198000000, 'Liên hệ trước khi giao',      'Cần Thơ',     'DELIVERED', '11111111-1111-1111-1111-111111111114', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999016', '2026-04-03 09:40:00', 128000000, 'Giao nhanh trong ngày',       'Hải Phòng',   'CONFIRMED', '11111111-1111-1111-1111-111111111115', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999017', '2026-04-03 09:50:00', 219000000, 'Khách cần hóa đơn công ty',   'Huế',         'PENDING',   '11111111-1111-1111-1111-111111111116', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999018', '2026-04-03 10:00:00', 172000000, 'Gọi xác nhận size cổ tay',    'Quảng Ninh',  'CONFIRMED', '11111111-1111-1111-1111-111111111117', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999019', '2026-04-03 10:10:00', 236000000, 'Giao buổi chiều',             'Nha Trang',   'PENDING',   '11111111-1111-1111-1111-111111111118', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999020', '2026-04-03 10:20:00', 162000000, 'Khách đã chuyển khoản',       'Bình Dương',  'DELIVERED', '11111111-1111-1111-1111-111111111119', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999021', '2026-04-03 10:30:00', 189000000, 'Đơn ưu tiên',                 'Đồng Nai',    'CONFIRMED', '11111111-1111-1111-1111-111111111120', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999022', '2026-04-03 10:40:00', 141000000, 'Đóng hộp cao cấp',            'Nam Định',    'PENDING',   '11111111-1111-1111-1111-111111111121', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999023', '2026-04-03 10:50:00',  69000000, 'Mua tặng đối tác',            'Vĩnh Phúc',   'CONFIRMED', '11111111-1111-1111-1111-111111111122', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999024', '2026-04-03 11:00:00',  54000000, 'Giao COD',                    'Thanh Hóa',   'PENDING',   '11111111-1111-1111-1111-111111111123', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999025', '2026-04-03 11:10:00',  48000000, 'Đã xác minh số điện thoại',   'Nghệ An',     'CONFIRMED', '11111111-1111-1111-1111-111111111124', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999026', '2026-04-03 11:20:00',  82000000, 'Khách muốn bảo hiểm vận chuyển','Bắc Ninh',  'PENDING',   '11111111-1111-1111-1111-111111111125', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999027', '2026-04-03 11:30:00',  76000000, 'Giao tại văn phòng',          'Hưng Yên',    'CONFIRMED', '11111111-1111-1111-1111-111111111126', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999028', '2026-04-03 11:40:00',  99000000, 'Đơn hàng thương hiệu cao cấp', 'Phú Thọ',     'DELIVERED', '11111111-1111-1111-1111-111111111127', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999029', '2026-04-03 11:50:00',  67000000, 'Giao thứ bảy',                'Bắc Giang',   'CONFIRMED', '11111111-1111-1111-1111-111111111128', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999030', '2026-04-03 12:00:00',  72000000, 'Ưu tiên đóng gói chống sốc',   'Thái Bình',   'PENDING',   '11111111-1111-1111-1111-111111111129', NULL),
+                                                                                                               ('99999999-9999-9999-9999-999999999031', '2026-04-03 12:10:00',  58000000, 'Khách đã xác nhận nhận hàng',  'Quảng Nam',   'CONFIRMED', '11111111-1111-1111-1111-111111111130', NULL);
+
 -- =========================================================
 -- 10) ORDER_ITEMS (gốc: 2 → thêm 9 → tổng 11)
 -- =========================================================
@@ -341,6 +462,29 @@ INSERT INTO order_items (id, quantity, sub_total, order_id, product_id) VALUES
                                                                             ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa009', 1, 11000000, '99999999-9999-9999-9999-999999999009', '44444444-4444-4444-4444-444444444010'),
                                                                             ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa010', 1,  2400000, '99999999-9999-9999-9999-999999999010', '44444444-4444-4444-4444-444444444011'),
                                                                             ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa011', 1,  8800000, '99999999-9999-9999-9999-999999999011', '44444444-4444-4444-4444-444444444010');
+
+-- Đồng bộ 20 product mới vào order_items (mỗi đơn 1 sản phẩm)
+INSERT INTO order_items (id, quantity, sub_total, order_id, product_id) VALUES
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa012', 1, 285000000, '99999999-9999-9999-9999-999999999012', '44444444-4444-4444-4444-444444444012'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa013', 1, 248000000, '99999999-9999-9999-9999-999999999013', '44444444-4444-4444-4444-444444444013'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa014', 1, 332000000, '99999999-9999-9999-9999-999999999014', '44444444-4444-4444-4444-444444444014'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa015', 1, 198000000, '99999999-9999-9999-9999-999999999015', '44444444-4444-4444-4444-444444444015'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa016', 1, 128000000, '99999999-9999-9999-9999-999999999016', '44444444-4444-4444-4444-444444444016'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa017', 1, 219000000, '99999999-9999-9999-9999-999999999017', '44444444-4444-4444-4444-444444444017'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa018', 1, 172000000, '99999999-9999-9999-9999-999999999018', '44444444-4444-4444-4444-444444444018'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa019', 1, 236000000, '99999999-9999-9999-9999-999999999019', '44444444-4444-4444-4444-444444444019'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa020', 1, 162000000, '99999999-9999-9999-9999-999999999020', '44444444-4444-4444-4444-444444444020'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa021', 1, 189000000, '99999999-9999-9999-9999-999999999021', '44444444-4444-4444-4444-444444444021'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa022', 1, 141000000, '99999999-9999-9999-9999-999999999022', '44444444-4444-4444-4444-444444444022'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa023', 1,  69000000, '99999999-9999-9999-9999-999999999023', '44444444-4444-4444-4444-444444444023'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa024', 1,  54000000, '99999999-9999-9999-9999-999999999024', '44444444-4444-4444-4444-444444444024'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa025', 1,  48000000, '99999999-9999-9999-9999-999999999025', '44444444-4444-4444-4444-444444444025'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa026', 1,  82000000, '99999999-9999-9999-9999-999999999026', '44444444-4444-4444-4444-444444444026'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa027', 1,  76000000, '99999999-9999-9999-9999-999999999027', '44444444-4444-4444-4444-444444444027'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa028', 1,  99000000, '99999999-9999-9999-9999-999999999028', '44444444-4444-4444-4444-444444444028'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa029', 1,  67000000, '99999999-9999-9999-9999-999999999029', '44444444-4444-4444-4444-444444444029'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa030', 1,  72000000, '99999999-9999-9999-9999-999999999030', '44444444-4444-4444-4444-444444444030'),
+                                                                            ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa031', 1,  58000000, '99999999-9999-9999-9999-999999999031', '44444444-4444-4444-4444-444444444031');
 
 -- =========================================================
 -- 11) ORDER_STATUS_HISTORY (gốc: 2 → thêm 10 → tổng 12)
@@ -361,28 +505,36 @@ INSERT INTO order_status_history (id, order_id, status, note, changed_at, change
 -- 12) PAYMENTS (gốc: 2 → thêm 9 → tổng 11)
 -- =========================================================
 INSERT INTO payments (id, payment_date, amount, method, status, is_paid, order_id) VALUES
-                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb003', '2026-03-10 10:10:00',  4080000, 'BANK_TRANSFER', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999003'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb003', '2026-03-10 10:10:00',  4080000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999003'),
                                                                                        ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb004', '2026-03-11 11:20:00',  6200000, 'COD',           'RECEIVED',  0, '99999999-9999-9999-9999-999999999004'),
-                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb005', '2026-03-12 09:35:00',  7500000, 'BANK_TRANSFER', 'PROCESSING',0, '99999999-9999-9999-9999-999999999005'),
-                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb006', '2026-03-13 14:05:00',  2560000, 'BANK_TRANSFER', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999006'),
-                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb007', '2026-03-14 08:05:00', 12000000, 'BANK_TRANSFER', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999007'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb005', '2026-03-12 09:35:00',  7500000, 'VNPAY', 'PROCESSING',0, '99999999-9999-9999-9999-999999999005'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb006', '2026-03-13 14:05:00',  2560000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999006'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb007', '2026-03-14 08:05:00', 12000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999007'),
                                                                                        ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb008', '2026-03-15 10:35:00',  5500000, 'COD',           'RECEIVED',  0, '99999999-9999-9999-9999-999999999008'),
-                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb009', '2026-03-16 13:10:00',  9900000, 'BANK_TRANSFER', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999009'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb009', '2026-03-16 13:10:00',  9900000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999009'),
                                                                                        ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb010', '2026-03-17 15:05:00',  2400000, 'COD',           'REJECTED',  0, '99999999-9999-9999-9999-999999999010'),
-                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb011', '2026-03-18 09:10:00',  8800000, 'BANK_TRANSFER', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999011');
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb011', '2026-03-18 09:10:00',  8800000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999011'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb012', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999012'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb013', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999013'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb014', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999014'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb015', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999015'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb016', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999016'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb017', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999017'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb018', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999018'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb019', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999019'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb020', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999020'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb021', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999021'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb022', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999022'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb023', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999023'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb024', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999024'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb025', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999025'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb026', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999026'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb027', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999027'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb028', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999028'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb029', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999029'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb030', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999030'),
+                                                                                       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbb031', '2026-04-03 10:00:00', 5000000, 'VNPAY', 'COMPLETED', 1, '99999999-9999-9999-9999-999999999031');
 
--- =========================================================
--- 13) SHIPPINGS (gốc: 2 → thêm 9 → tổng 11)
--- =========================================================
-INSERT INTO shippings (id, tracking_number, tracking_date, carrier_name, carrier_phone, estimated_delivery, order_id) VALUES
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc003', 'TRACK-0003', '2026-03-10 14:00:00', 'GHN',  '0912345678', '2026-03-12 18:00:00', '99999999-9999-9999-9999-999999999003'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc004', 'TRACK-0004', '2026-03-11 15:00:00', 'GHTK', '0987654321', '2026-03-13 18:00:00', '99999999-9999-9999-9999-999999999004'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc005', 'TRACK-0005', '2026-03-12 10:00:00', 'Viettel Post','0911111111','2026-03-14 18:00:00','99999999-9999-9999-9999-999999999005'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc006', 'TRACK-0006', '2026-03-13 16:00:00', 'GHN',  '0912345678', '2026-03-15 18:00:00', '99999999-9999-9999-9999-999999999006'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc007', 'TRACK-0007', '2026-03-14 09:00:00', 'GHTK', '0987654321', '2026-03-16 18:00:00', '99999999-9999-9999-9999-999999999007'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc008', 'TRACK-0008', '2026-03-15 11:00:00', 'Ninja Van','0922222222','2026-03-17 18:00:00','99999999-9999-9999-9999-999999999008'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc009', 'TRACK-0009', '2026-03-16 14:00:00', 'GHN',  '0912345678', '2026-03-18 18:00:00', '99999999-9999-9999-9999-999999999009'),
-                                                                                                                          ('cccccccc-cccc-cccc-cccc-ccccccccc010', 'TRACK-0010', '2026-03-18 10:00:00', 'GHTK', '0987654321', '2026-03-20 18:00:00', '99999999-9999-9999-9999-999999999011');
 
 -- =========================================================
 -- 14) WARRANTIES (gốc: 2 → thêm 8 → tổng 10)
@@ -444,8 +596,31 @@ INSERT INTO import_details (id, quantity, import_price, import_receipt_id, produ
                                                                                            ('12121212-1212-1212-1212-121212121010', 30, 1900000, 'ffffffff-ffff-ffff-ffff-fffffffff010', '44444444-4444-4444-4444-444444444011'),
                                                                                            ('12121212-1212-1212-1212-121212121011',  5, 4200000, 'ffffffff-ffff-ffff-ffff-fffffffff003', '44444444-4444-4444-4444-444444444001');
 
+-- Đồng bộ import_details cho 20 product mới (012-031)
+INSERT INTO import_details (id, quantity, import_price, import_receipt_id, product_id) VALUES
+                                                                                           ('12121212-1212-1212-1212-121212121012',  6, 228000000, 'ffffffff-ffff-ffff-ffff-fffffffff003', '44444444-4444-4444-4444-444444444012'),
+                                                                                           ('12121212-1212-1212-1212-121212121013',  7, 198000000, 'ffffffff-ffff-ffff-ffff-fffffffff004', '44444444-4444-4444-4444-444444444013'),
+                                                                                           ('12121212-1212-1212-1212-121212121014',  5, 266000000, 'ffffffff-ffff-ffff-ffff-fffffffff005', '44444444-4444-4444-4444-444444444014'),
+                                                                                           ('12121212-1212-1212-1212-121212121015',  8, 158000000, 'ffffffff-ffff-ffff-ffff-fffffffff006', '44444444-4444-4444-4444-444444444015'),
+                                                                                           ('12121212-1212-1212-1212-121212121016',  9, 102000000, 'ffffffff-ffff-ffff-ffff-fffffffff007', '44444444-4444-4444-4444-444444444016'),
+                                                                                           ('12121212-1212-1212-1212-121212121017',  7, 175000000, 'ffffffff-ffff-ffff-ffff-fffffffff008', '44444444-4444-4444-4444-444444444017'),
+                                                                                           ('12121212-1212-1212-1212-121212121018',  7, 137000000, 'ffffffff-ffff-ffff-ffff-fffffffff009', '44444444-4444-4444-4444-444444444018'),
+                                                                                           ('12121212-1212-1212-1212-121212121019',  6, 189000000, 'ffffffff-ffff-ffff-ffff-fffffffff010', '44444444-4444-4444-4444-444444444019'),
+                                                                                           ('12121212-1212-1212-1212-121212121020',  8, 129000000, 'ffffffff-ffff-ffff-ffff-fffffffff003', '44444444-4444-4444-4444-444444444020'),
+                                                                                           ('12121212-1212-1212-1212-121212121021',  7, 151000000, 'ffffffff-ffff-ffff-ffff-fffffffff004', '44444444-4444-4444-4444-444444444021'),
+                                                                                           ('12121212-1212-1212-1212-121212121022',  8, 113000000, 'ffffffff-ffff-ffff-ffff-fffffffff005', '44444444-4444-4444-4444-444444444022'),
+                                                                                           ('12121212-1212-1212-1212-121212121023', 10,  52000000, 'ffffffff-ffff-ffff-ffff-fffffffff006', '44444444-4444-4444-4444-444444444023'),
+                                                                                           ('12121212-1212-1212-1212-121212121024', 11,  41000000, 'ffffffff-ffff-ffff-ffff-fffffffff007', '44444444-4444-4444-4444-444444444024'),
+                                                                                           ('12121212-1212-1212-1212-121212121025',  9,  36000000, 'ffffffff-ffff-ffff-ffff-fffffffff008', '44444444-4444-4444-4444-444444444025'),
+                                                                                           ('12121212-1212-1212-1212-121212121026',  9,  62000000, 'ffffffff-ffff-ffff-ffff-fffffffff009', '44444444-4444-4444-4444-444444444026'),
+                                                                                           ('12121212-1212-1212-1212-121212121027', 10,  58000000, 'ffffffff-ffff-ffff-ffff-fffffffff010', '44444444-4444-4444-4444-444444444027'),
+                                                                                           ('12121212-1212-1212-1212-121212121028',  7,  76000000, 'ffffffff-ffff-ffff-ffff-fffffffff003', '44444444-4444-4444-4444-444444444028'),
+                                                                                           ('12121212-1212-1212-1212-121212121029', 11,  51000000, 'ffffffff-ffff-ffff-ffff-fffffffff004', '44444444-4444-4444-4444-444444444029'),
+                                                                                           ('12121212-1212-1212-1212-121212121030',  8,  55000000, 'ffffffff-ffff-ffff-ffff-fffffffff005', '44444444-4444-4444-4444-444444444030'),
+                                                                                           ('12121212-1212-1212-1212-121212121031', 10,  44000000, 'ffffffff-ffff-ffff-ffff-fffffffff006', '44444444-4444-4444-4444-444444444031');
+
 -- =========================================================
--- 18) REVIEWS (gốc: 2 → thêm 9 → tổng 11)
+-- 18) REVIEWS (bổ sung thêm review cho product mới)
 -- =========================================================
 INSERT INTO reviews (id, rating, comment, created_at, customer_id, product_id) VALUES
                                                                                    ('13131313-1313-1313-1313-131313131003', 5, 'Hàng chính hãng, đẹp xuất sắc',     '2026-03-15 10:00:00', '11111111-1111-1111-1111-111111111103', '44444444-4444-4444-4444-444444444004'),
@@ -456,20 +631,40 @@ INSERT INTO reviews (id, rating, comment, created_at, customer_id, product_id) V
                                                                                    ('13131313-1313-1313-1313-131313131008', 3, 'Tạm ổn, có vài lỗi nhỏ',            '2026-03-20 10:00:00', '11111111-1111-1111-1111-111111111108', '44444444-4444-4444-4444-444444444009'),
                                                                                    ('13131313-1313-1313-1313-131313131009', 5, 'Swiss made, giá hợp lý',            '2026-03-21 10:00:00', '11111111-1111-1111-1111-111111111101', '44444444-4444-4444-4444-444444444010'),
                                                                                    ('13131313-1313-1313-1313-131313131010', 4, 'Màu hồng cute, thích hợp đi học',   '2026-03-22 10:00:00', '11111111-1111-1111-1111-111111111102', '44444444-4444-4444-4444-444444444011'),
-                                                                                   ('13131313-1313-1313-1313-131313131011', 2, 'Giao chậm hơn dự kiến',             '2026-03-23 10:00:00', '11111111-1111-1111-1111-111111111103', '44444444-4444-4444-4444-444444444003');
+                                                                                   ('13131313-1313-1313-1313-131313131011', 2, 'Giao chậm hơn dự kiến',             '2026-03-23 10:00:00', '11111111-1111-1111-1111-111111111103', '44444444-4444-4444-4444-444444444003'),
+                                                                                   ('13131313-1313-1313-1313-131313131012', 5, 'Rolex Submariner hoàn thiện rất tốt, đeo chắc tay.', '2026-04-02 13:00:00', '11111111-1111-1111-1111-111111111101', '44444444-4444-4444-4444-444444444012'),
+                                                                                   ('13131313-1313-1313-1313-131313131013', 5, 'Datejust đeo rất sang, mặt xanh đẹp hơn ảnh.',       '2026-04-02 13:05:00', '11111111-1111-1111-1111-111111111102', '44444444-4444-4444-4444-444444444013'),
+                                                                                   ('13131313-1313-1313-1313-131313131014', 4, 'GMT-Master II chạy ổn định, khóa dây chắc chắn.',    '2026-04-02 13:10:00', '11111111-1111-1111-1111-111111111103', '44444444-4444-4444-4444-444444444014'),
+                                                                                   ('13131313-1313-1313-1313-131313131015', 5, 'Oyster Perpetual nhỏ gọn, rất hợp cổ tay nữ.',       '2026-04-02 13:15:00', '11111111-1111-1111-1111-111111111104', '44444444-4444-4444-4444-444444444015'),
+                                                                                   ('13131313-1313-1313-1313-131313131016', 4, 'Tank Must đúng kiểu cổ điển, mặt số rõ nét.',        '2026-04-02 13:20:00', '11111111-1111-1111-1111-111111111105', '44444444-4444-4444-4444-444444444016'),
+                                                                                   ('13131313-1313-1313-1313-131313131017', 5, 'Santos lên tay rất đẹp, đeo đi làm cực hợp.',        '2026-04-02 13:25:00', '11111111-1111-1111-1111-111111111106', '44444444-4444-4444-4444-444444444017'),
+                                                                                   ('13131313-1313-1313-1313-131313131018', 5, 'Ballon Bleu tinh tế, đóng gói rất cẩn thận.',         '2026-04-02 13:30:00', '11111111-1111-1111-1111-111111111107', '44444444-4444-4444-4444-444444444018'),
+                                                                                   ('13131313-1313-1313-1313-131313131019', 4, 'Pasha thiết kế lạ mắt, dây da mềm và ôm tay.',       '2026-04-02 13:35:00', '11111111-1111-1111-1111-111111111108', '44444444-4444-4444-4444-444444444019'),
+                                                                                   ('13131313-1313-1313-1313-131313131020', 5, 'Seamaster đúng chuẩn diver cao cấp, rất hài lòng.',  '2026-04-02 13:40:00', '11111111-1111-1111-1111-111111111109', '44444444-4444-4444-4444-444444444020'),
+                                                                                   ('13131313-1313-1313-1313-131313131021', 5, 'Moonwatch lên tay cực kỳ nam tính, hoàn thiện tốt.', '2026-04-02 13:45:00', '11111111-1111-1111-1111-111111111110', '44444444-4444-4444-4444-444444444021'),
+                                                                                   ('13131313-1313-1313-1313-131313131022', 4, 'Constellation nhỏ gọn, mặt trắng rất thanh lịch.',   '2026-04-02 13:50:00', '11111111-1111-1111-1111-111111111101', '44444444-4444-4444-4444-444444444022'),
+                                                                                   ('13131313-1313-1313-1313-131313131023', 5, 'Master Collection chạy êm, kính sapphire trong.',    '2026-04-02 13:55:00', '11111111-1111-1111-1111-111111111102', '44444444-4444-4444-4444-444444444023'),
+                                                                                   ('13131313-1313-1313-1313-131313131024', 4, 'HydroConquest thể thao nhưng vẫn sang trọng.',       '2026-04-02 14:00:00', '11111111-1111-1111-1111-111111111103', '44444444-4444-4444-4444-444444444024'),
+                                                                                   ('13131313-1313-1313-1313-131313131025', 5, 'DolceVita rất đẹp, phù hợp làm quà tặng.',           '2026-04-02 14:05:00', '11111111-1111-1111-1111-111111111104', '44444444-4444-4444-4444-444444444025'),
+                                                                                   ('13131313-1313-1313-1313-131313131026', 4, 'Carrera thiết kế đẹp, kim và cọc số hoàn thiện tốt.', '2026-04-02 14:10:00', '11111111-1111-1111-1111-111111111105', '44444444-4444-4444-4444-444444444026'),
+                                                                                   ('13131313-1313-1313-1313-131313131027', 5, 'Aquaracer đeo chắc tay, chống nước đúng kỳ vọng.',   '2026-04-02 14:15:00', '11111111-1111-1111-1111-111111111106', '44444444-4444-4444-4444-444444444027'),
+                                                                                   ('13131313-1313-1313-1313-131313131028', 5, 'Monaco form vuông nổi bật, rất khác biệt.',          '2026-04-02 14:20:00', '11111111-1111-1111-1111-111111111107', '44444444-4444-4444-4444-444444444028'),
+                                                                                   ('13131313-1313-1313-1313-131313131029', 4, 'Captain Cook đẹp, dây thép đeo thoải mái.',         '2026-04-02 14:25:00', '11111111-1111-1111-1111-111111111108', '44444444-4444-4444-4444-444444444029'),
+                                                                                   ('13131313-1313-1313-1313-131313131030', 4, 'True Square nhìn hiện đại, chất liệu hoàn thiện tốt.', '2026-04-02 14:30:00', '11111111-1111-1111-1111-111111111109', '44444444-4444-4444-4444-444444444030'),
+                                                                                   ('13131313-1313-1313-1313-131313131031', 5, 'Centrix Automatic sang và đeo nhẹ tay.',             '2026-04-02 14:35:00', '11111111-1111-1111-1111-111111111110', '44444444-4444-4444-4444-444444444031');
 
 -- =========================================================
 -- 19) CHATS (gốc: 2 → thêm 8 → tổng 10)
 -- =========================================================
 INSERT INTO chats (id, start_date, end_date, is_ai_handled, customer_id) VALUES
-                                                                                ('14141414-1414-1414-1414-141414141003', '2026-03-13 08:00:00', '2026-03-13 08:20:00', 0, '11111111-1111-1111-1111-111111111103'),
-                                                                                ('14141414-1414-1414-1414-141414141004', '2026-03-14 09:00:00', '2026-03-14 09:30:00', 1, '11111111-1111-1111-1111-111111111104'),
-                                                                                ('14141414-1414-1414-1414-141414141005', '2026-03-15 10:00:00', '2026-03-15 10:25:00', 1, '11111111-1111-1111-1111-111111111105'),
-                                                                                ('14141414-1414-1414-1414-141414141006', '2026-03-16 08:30:00', '2026-03-16 09:00:00', 0, '11111111-1111-1111-1111-111111111106'),
-                                                                                ('14141414-1414-1414-1414-141414141007', '2026-03-17 09:00:00', '2026-03-17 09:40:00', 1, '11111111-1111-1111-1111-111111111107'),
-                                                                                ('14141414-1414-1414-1414-141414141008', '2026-03-18 10:00:00', '2026-03-18 10:30:00', 0, '11111111-1111-1111-1111-111111111108'),
-                                                                                ('14141414-1414-1414-1414-141414141009', '2026-03-19 11:00:00', '2026-03-19 11:20:00', 1, '11111111-1111-1111-1111-111111111101'),
-                                                                                ('14141414-1414-1414-1414-141414141010', '2026-03-20 08:00:00', '2026-03-20 08:30:00', 1, '11111111-1111-1111-1111-111111111102');
+                                                                             ('14141414-1414-1414-1414-141414141003', '2026-03-13 08:00:00', '2026-03-13 08:20:00', 0, '11111111-1111-1111-1111-111111111103'),
+                                                                             ('14141414-1414-1414-1414-141414141004', '2026-03-14 09:00:00', '2026-03-14 09:30:00', 1, '11111111-1111-1111-1111-111111111104'),
+                                                                             ('14141414-1414-1414-1414-141414141005', '2026-03-15 10:00:00', '2026-03-15 10:25:00', 1, '11111111-1111-1111-1111-111111111105'),
+                                                                             ('14141414-1414-1414-1414-141414141006', '2026-03-16 08:30:00', '2026-03-16 09:00:00', 0, '11111111-1111-1111-1111-111111111106'),
+                                                                             ('14141414-1414-1414-1414-141414141007', '2026-03-17 09:00:00', '2026-03-17 09:40:00', 1, '11111111-1111-1111-1111-111111111107'),
+                                                                             ('14141414-1414-1414-1414-141414141008', '2026-03-18 10:00:00', '2026-03-18 10:30:00', 0, '11111111-1111-1111-1111-111111111108'),
+                                                                             ('14141414-1414-1414-1414-141414141009', '2026-03-19 11:00:00', '2026-03-19 11:20:00', 1, '11111111-1111-1111-1111-111111111101'),
+                                                                             ('14141414-1414-1414-1414-141414141010', '2026-03-20 08:00:00', '2026-03-20 08:30:00', 1, '11111111-1111-1111-1111-111111111102');
 
 -- =========================================================
 -- 20) REVIEW_REPORTS (gốc: 1 → thêm 9 → tổng 10)
@@ -537,7 +732,27 @@ INSERT INTO product_categories (product_id, category_id) VALUES
                                                              ('44444444-4444-4444-4444-444444444011', '22222222-2222-2222-2222-222222222005'),  -- Baby-G → Nữ
                                                              ('44444444-4444-4444-4444-444444444011', '22222222-2222-2222-2222-222222222004'),  -- Baby-G → Thể thao
                                                              ('44444444-4444-4444-4444-444444444003', '22222222-2222-2222-2222-222222222004'),  -- Apple Watch → Thể thao
-                                                             ('44444444-4444-4444-4444-444444444006', '22222222-2222-2222-2222-222222222004')   -- Galaxy Watch → Thể thao
+                                                             ('44444444-4444-4444-4444-444444444006', '22222222-2222-2222-2222-222222222004'),  -- Galaxy Watch → Thể thao
+                                                             ('44444444-4444-4444-4444-444444444012', '22222222-2222-2222-2222-222222222004'),  -- Submariner → Thể thao
+                                                             ('44444444-4444-4444-4444-444444444013', '22222222-2222-2222-2222-222222222006'),  -- Datejust → Nam
+                                                             ('44444444-4444-4444-4444-444444444014', '22222222-2222-2222-2222-222222222004'),  -- GMT-Master II → Thể thao
+                                                             ('44444444-4444-4444-4444-444444444015', '22222222-2222-2222-2222-222222222007'),  -- Oyster Perpetual 31 → Luxury
+                                                             ('44444444-4444-4444-4444-444444444016', '22222222-2222-2222-2222-222222222007'),  -- Tank Must → Luxury
+                                                             ('44444444-4444-4444-4444-444444444017', '22222222-2222-2222-2222-222222222006'),  -- Santos → Nam
+                                                             ('44444444-4444-4444-4444-444444444018', '22222222-2222-2222-2222-222222222007'),  -- Ballon Bleu → Luxury
+                                                             ('44444444-4444-4444-4444-444444444019', '22222222-2222-2222-2222-222222222006'),  -- Pasha → Nam
+                                                             ('44444444-4444-4444-4444-444444444020', '22222222-2222-2222-2222-222222222007'),  -- Seamaster → Luxury
+                                                             ('44444444-4444-4444-4444-444444444021', '22222222-2222-2222-2222-222222222006'),  -- Speedmaster → Nam
+                                                             ('44444444-4444-4444-4444-444444444022', '22222222-2222-2222-2222-222222222007'),  -- Constellation → Luxury
+                                                             ('44444444-4444-4444-4444-444444444023', '22222222-2222-2222-2222-222222222006'),  -- Master Collection → Nam
+                                                             ('44444444-4444-4444-4444-444444444024', '22222222-2222-2222-2222-222222222007'),  -- HydroConquest → Luxury
+                                                             ('44444444-4444-4444-4444-444444444025', '22222222-2222-2222-2222-222222222005'),  -- DolceVita → Nữ
+                                                             ('44444444-4444-4444-4444-444444444026', '22222222-2222-2222-2222-222222222006'),  -- Carrera → Nam
+                                                             ('44444444-4444-4444-4444-444444444027', '22222222-2222-2222-2222-222222222007'),  -- Aquaracer → Luxury
+                                                             ('44444444-4444-4444-4444-444444444028', '22222222-2222-2222-2222-222222222007'),  -- Monaco → Luxury
+                                                             ('44444444-4444-4444-4444-444444444029', '22222222-2222-2222-2222-222222222007'),  -- Captain Cook → Luxury
+                                                             ('44444444-4444-4444-4444-444444444030', '22222222-2222-2222-2222-222222222006'),  -- True Square → Nam
+                                                             ('44444444-4444-4444-4444-444444444031', '22222222-2222-2222-2222-222222222007')   -- Centrix Automatic → Luxury
     ON DUPLICATE KEY UPDATE product_id = VALUES(product_id);
 
 COMMIT;
