@@ -241,6 +241,31 @@ public class MoMoPaymentStrategyImpl implements PaymentStrategy {
         }
     }
 
+    public boolean processReturn(Map<String, String> params) {
+        try {
+            Map<String, Object> payload = new java.util.HashMap<>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                
+                // Convert known numeric fields
+                if ("amount".equals(key) || "transId".equals(key) || "resultCode".equals(key)) {
+                    try {
+                        payload.put(key, Long.parseLong(value));
+                    } catch (NumberFormatException e) {
+                        payload.put(key, 0L);
+                    }
+                } else {
+                    payload.put(key, value);
+                }
+            }
+            return processIpn(payload);
+        } catch (Exception e) {
+            log.error("Error processing MoMo Return", e);
+            return false;
+        }
+    }
+
     private static class PendingMoMoSession {
         private final String orderId;
         private final String customerId;
