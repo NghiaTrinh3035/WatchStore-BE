@@ -61,6 +61,7 @@ import com.example.demo.features.products.repositories.*;
 import com.example.demo.features.orders.repositories.*;
 import com.example.demo.features.users.repositories.*;
 import com.example.demo.features.vouchers.repositories.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -96,6 +97,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final AccessControlService accessControlService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Value("${notification.system-sender-id:}")
     private String systemSenderId;
@@ -164,9 +166,9 @@ public class NotificationService {
                 .directUrl(directUrl)
                 .sender(sender)
                 .receiver(receiver)
-                .expiry(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .build();
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + receiver.getId(), toResponse(notification));
     }
 
     public void sendRegistrationSuccessNotification(User registeredUser) {
@@ -190,7 +192,8 @@ public class NotificationService {
                 .expiry(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .build();
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getReceiver().getId(), toResponse(notification));
     }
 
     public void sendPasswordResetSuccessNotification(String senderId, User user) {
@@ -217,7 +220,8 @@ public class NotificationService {
                 .expiry(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .build();
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getReceiver().getId(), toResponse(notification));
     }
 
     public void sendPasswordResetSuccessNotification(User user) {
@@ -248,7 +252,8 @@ public class NotificationService {
                 .expiry(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .build();
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getReceiver().getId(), toResponse(notification));
     }
 
     public void sendOrderSuccessNotification(User customer, String orderId) {
@@ -279,7 +284,8 @@ public class NotificationService {
                 .expiry(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .build();
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getReceiver().getId(), toResponse(notification));
     }
 
     public void notifyStoreAboutNewOrder(User customer, String orderId) {
@@ -400,7 +406,8 @@ public class NotificationService {
                 .expiry(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .build();
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getReceiver().getId(), toResponse(notification));
     }
 
     public void sendOrderConfirmedNotification(String senderId, User customer, String orderId) {
@@ -468,7 +475,8 @@ public class NotificationService {
         if (!notification.isRead()) {
             notification.setRead(true);
             notification.setReadAt(Date.from(Instant.now()));
-            notificationRepository.save(notification);
+            notification = notificationRepository.save(notification);
+            messagingTemplate.convertAndSend("/topic/notifications/" + userId, toResponse(notification));
         }
     }
 
