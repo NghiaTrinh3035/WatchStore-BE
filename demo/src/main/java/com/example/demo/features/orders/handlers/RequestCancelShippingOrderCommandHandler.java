@@ -13,8 +13,6 @@ import com.example.demo.features.orders.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -47,43 +45,16 @@ public class RequestCancelShippingOrderCommandHandler implements CommandHandler<
             throw new IllegalStateException("Chỉ có thể gửi yêu cầu hủy khi đơn hàng đang giao.");
         }
 
-        String reason = normalizeCancelReason(request != null ? request.getReason() : null);
-        String note = normalizeText(request != null ? request.getNote() : null);
+        String reason = OrderCommandUtils.normalizeCancelReason(request != null ? request.getReason() : null);
+        String note = OrderCommandUtils.normalizeText(request != null ? request.getNote() : null);
         String historyNote = "Yêu cầu hủy khi đang giao. Lý do: " + reason;
         if (StringUtils.hasText(note)) {
             historyNote += "; Ghi chú: " + note;
         }
 
-        eventPublisher.publishEvent(new OrderCancelRequestedEvent(this, order, reason, note, getCurrentUsername(), historyNote));
+        eventPublisher.publishEvent(new OrderCancelRequestedEvent(this, order, reason, note, OrderCommandUtils.getCurrentUsername(), historyNote));
 
         return orderService.toOrderResponse(order);
     }
-
-    private String normalizeCancelReason(String rawReason) {
-        if (!StringUtils.hasText(rawReason)) {
-            return "Khác";
-        }
-        String normalized = rawReason.trim().toUpperCase();
-        return switch (normalized) {
-            case "WRONG_PRODUCT" -> "Đặt nhầm sản phẩm";
-            case "BETTER_PRICE" -> "Tìm thấy giá tốt hơn";
-            case "DONT_NEED_ANYMORE" -> "Không cần nữa";
-            case "CHANGED_MIND" -> "Thay đổi ý định";
-            case "DELIVERY_TOO_LONG" -> "Thời gian giao hàng quá lâu";
-            case "OTHER" -> "Khác";
-            default -> rawReason.trim();
-        };
-    }
-
-    private String normalizeText(String input) {
-        if (!StringUtils.hasText(input)) {
-            return null;
-        }
-        return input.trim();
-    }
-
-    private String getCurrentUsername() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth != null ? auth.getName() : "system";
-    }
 }
+
