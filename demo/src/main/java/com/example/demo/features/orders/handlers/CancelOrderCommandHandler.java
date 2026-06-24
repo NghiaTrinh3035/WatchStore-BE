@@ -43,7 +43,6 @@ public class CancelOrderCommandHandler implements CommandHandler<CancelOrderComm
 
         accessControlService.requireCustomerAccess(order.getCustomer().getId());
         
-        // Use OrderService's public validation method (will make it public later)
         orderService.validateCustomerCancellation(order);
 
         String reason = normalizeCancelReason(request != null ? request.getReason() : null);

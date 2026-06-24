@@ -99,9 +99,6 @@ public class OrderService {
     @Value("${order.cancel.self-window-hours:24}")
     private long selfCancelWindowHours;
 
-
-
-
     @Transactional(readOnly = true)
     public Optional<OrderResponse> findById(String id) {
         return orderRepository.findById(id)
