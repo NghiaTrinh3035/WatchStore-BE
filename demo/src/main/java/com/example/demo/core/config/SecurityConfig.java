@@ -121,6 +121,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/vouchers/**").hasRole("OWNER")
                         .requestMatchers(HttpMethod.DELETE, "/api/vouchers/**").hasRole("OWNER")
 
+                        .requestMatchers("/api/payment/**").permitAll()
+
                         .requestMatchers(HttpMethod.PATCH, "/api/orders/*/status").hasAnyRole("STAFF", "OWNER")
                         .requestMatchers(HttpMethod.POST, "/api/products/*/discussions").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/categories/**").hasAnyRole("STAFF", "OWNER")
