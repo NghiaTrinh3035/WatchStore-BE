@@ -10,6 +10,8 @@ import com.example.demo.features.orders.dtos.response.OrderResponse;
 import com.example.demo.features.orders.dtos.response.PaymentResponse;
 import com.example.demo.features.orders.dtos.response.PaymentStatusResponse;
 import com.example.demo.features.orders.services.OrderService;
+import com.example.demo.features.orders.services.OrderCommandInvoker;
+import com.example.demo.features.orders.commands.CreateOrderCommand;
 import com.example.demo.features.orders.services.payment.config.MoMoConfig;
 import com.example.demo.features.users.repositories.CustomerRepository;
 import com.example.demo.core.services.AccessControlService;
@@ -36,6 +38,7 @@ import java.util.concurrent.ConcurrentMap;
 public class MoMoPaymentStrategyImpl implements PaymentStrategy {
 
     private final OrderService orderService;
+    private final OrderCommandInvoker orderCommandInvoker;
     private final CustomerRepository customerRepository;
     private final AccessControlService accessControlService;
     private final CartService cartService;
@@ -227,7 +230,7 @@ public class MoMoPaymentStrategyImpl implements PaymentStrategy {
                     paymentRequest.setPaymentDate(new Date());
                     orderRequest.setPayment(paymentRequest);
 
-                    OrderResponse createdOrder = orderService.createOrder(orderRequest);
+                    OrderResponse createdOrder = orderCommandInvoker.execute(new CreateOrderCommand(orderRequest));
                     cartService.clearCart(session.getCustomerId(), true);
                     session.complete(createdOrder.getId());
                 } else {

@@ -1,67 +1,21 @@
 package com.example.demo.features.orders.controllers;
 
 
-import com.example.demo.features.communications.controllers.*;
-import com.example.demo.features.warranty.dtos.request.*;
-import com.example.demo.features.communications.entities.*;
-import com.example.demo.features.auth.dtos.response.*;
-import com.example.demo.features.inventory.services.*;
-import com.example.demo.features.orders.dtos.request.*;
-import com.example.demo.features.auth.dtos.request.*;
-import com.example.demo.features.reports.dtos.response.*;
-import com.example.demo.features.reports.services.*;
-import com.example.demo.features.orders.entities.*;
-import com.example.demo.features.inventory.controllers.*;
-import com.example.demo.features.vouchers.dtos.response.*;
-import com.example.demo.features.communications.repositories.*;
-import com.example.demo.features.inventory.dtos.request.*;
-import com.example.demo.core.enums.*;
-import com.example.demo.core.dtos.response.*;
-import com.example.demo.features.auth.controllers.*;
-import com.example.demo.features.reports.repositories.*;
-import com.example.demo.core.services.*;
-import com.example.demo.features.vouchers.controllers.*;
-import com.example.demo.features.warranty.services.*;
-import com.example.demo.features.communications.dtos.response.*;
-import com.example.demo.features.orders.dtos.response.*;
-import com.example.demo.core.exceptions.*;
-import com.example.demo.features.reports.dtos.request.*;
-import com.example.demo.features.auth.services.*;
-import com.example.demo.features.users.dtos.response.*;
-import com.example.demo.features.users.services.*;
-import com.example.demo.features.users.controllers.*;
-import com.example.demo.features.products.dtos.response.*;
-import com.example.demo.core.config.*;
-import com.example.demo.features.orders.services.payment.*;
-import com.example.demo.features.vouchers.dtos.request.*;
-import com.example.demo.features.products.services.*;
-import com.example.demo.features.vouchers.services.*;
-import com.example.demo.core.entities.*;
-import com.example.demo.features.warranty.entities.*;
-import com.example.demo.features.inventory.dtos.response.*;
-import com.example.demo.features.warranty.controllers.*;
-import com.example.demo.features.users.entities.*;
-import com.example.demo.features.products.dtos.request.*;
-import com.example.demo.features.warranty.repositories.*;
-import com.example.demo.features.inventory.repositories.*;
-import com.example.demo.features.communications.dtos.request.*;
-import com.example.demo.features.warranty.dtos.response.*;
-import com.example.demo.features.orders.controllers.*;
-import com.example.demo.features.products.entities.*;
-import com.example.demo.features.vouchers.entities.*;
-import com.example.demo.features.products.controllers.*;
-import com.example.demo.features.reports.controllers.*;
-import com.example.demo.features.inventory.entities.*;
-import com.example.demo.features.communications.services.*;
-import com.example.demo.features.orders.services.*;
-import com.example.demo.features.users.dtos.request.*;
-import com.example.demo.features.reports.entities.*;
-import com.example.demo.core.common.*;
-import com.example.demo.features.products.repositories.*;
-import com.example.demo.features.orders.repositories.*;
-import com.example.demo.features.users.repositories.*;
-import com.example.demo.features.vouchers.repositories.*;
-
+import com.example.demo.core.enums.OrderStatus;
+import com.example.demo.core.enums.PaymentMethod;
+import com.example.demo.features.orders.commands.CancelOrderCommand;
+import com.example.demo.features.orders.commands.CreateOrderCommand;
+import com.example.demo.features.orders.commands.RequestCancelShippingOrderCommand;
+import com.example.demo.features.orders.commands.UpdateOrderStatusCommand;
+import com.example.demo.features.orders.dtos.request.CancelOrderRequest;
+import com.example.demo.features.orders.dtos.request.OrderRequest;
+import com.example.demo.features.orders.dtos.request.PaymentPrepareRequest;
+import com.example.demo.features.orders.dtos.response.OrderResponse;
+import com.example.demo.features.orders.dtos.response.PaymentResponse;
+import com.example.demo.features.orders.dtos.response.PaymentStatusResponse;
+import com.example.demo.features.orders.services.OrderCommandInvoker;
+import com.example.demo.features.orders.services.OrderService;
+import com.example.demo.features.orders.services.payment.PaymentStrategyFactory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,7 +31,9 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderCommandInvoker orderCommandInvoker;
     private final PaymentStrategyFactory paymentStrategyFactory;
+
 
     @GetMapping
     public ResponseEntity<Page<OrderResponse>> getAllOrders(
@@ -101,7 +57,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> create(@Valid @RequestBody OrderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderCommandInvoker.execute(new CreateOrderCommand(request)));
     }
 
     @PostMapping("/payment/prepare")
@@ -128,20 +84,20 @@ public class OrderController {
     public ResponseEntity<OrderResponse> updateStatus(
             @PathVariable String id,
             @RequestParam OrderStatus status) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+        return ResponseEntity.ok(orderCommandInvoker.execute(new UpdateOrderStatusCommand(id, status)));
     }
 
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<OrderResponse> cancel(
             @PathVariable String id,
             @RequestBody(required = false) CancelOrderRequest request) {
-        return ResponseEntity.ok(orderService.cancelOrder(id, request));
+        return ResponseEntity.ok(orderCommandInvoker.execute(new CancelOrderCommand(id, request)));
     }
 
     @PatchMapping("/{id}/cancel-request")
     public ResponseEntity<OrderResponse> requestCancel(
             @PathVariable String id,
             @RequestBody(required = false) CancelOrderRequest request) {
-        return ResponseEntity.ok(orderService.requestCancelForShippingOrder(id, request));
+        return ResponseEntity.ok(orderCommandInvoker.execute(new RequestCancelShippingOrderCommand(id, request)));
     }
 }
