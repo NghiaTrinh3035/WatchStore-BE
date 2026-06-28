@@ -65,6 +65,8 @@ import com.example.demo.features.vouchers.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,6 +99,25 @@ public class ReportController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate) {
         return ResponseEntity.ok(reportService.getDashboardSummary(fromDate, toDate));
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportReport(
+            @RequestParam(defaultValue = "excel") String type,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate) {
+            
+        byte[] fileData = reportService.exportSummaryReport(type, fromDate, toDate);
+        
+        HttpHeaders headers = new HttpHeaders();
+        if ("excel".equalsIgnoreCase(type)) {
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", "report_doanh_thu.xlsx");
+        }
+        
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(fileData);
     }
 
     @GetMapping("/statistics")
