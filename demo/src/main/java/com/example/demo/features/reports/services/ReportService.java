@@ -72,6 +72,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import com.example.demo.features.reports.services.export.ReportExporter;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +84,7 @@ public class ReportService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final AccessControlService accessControlService;
+    private final Map<String, ReportExporter> exporters;
 
     public DashboardReportResponse getDashboardReport(ReportFilterRequest filterRequest) {
         accessControlService.requireOwnerRole();
@@ -112,6 +115,20 @@ public class ReportService {
             log.error("Failed to query dashboard summary from {} to {}", fromDate, toDate, ex);
             throw new IllegalStateException("Cannot generate dashboard summary at the moment");
         }
+    }
+
+    public byte[] exportSummaryReport(String format, Date fromDate, Date toDate) {
+        accessControlService.requireOwnerRole();
+        DashboardSummaryResponse summaryData = getDashboardSummary(fromDate, toDate);
+        
+        String beanName = format.toLowerCase() + "Exporter";
+        ReportExporter exporter = exporters.get(beanName);
+        
+        if (exporter == null) {
+            throw new IllegalArgumentException("Không hỗ trợ định dạng xuất báo cáo này: " + format);
+        }
+        
+        return exporter.export(summaryData);
     }
 
     public DashboardStatisticResponse getDashboardStatistic(Date fromDate, Date toDate, int topLimit) {
