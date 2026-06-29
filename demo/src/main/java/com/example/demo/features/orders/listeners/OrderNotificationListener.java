@@ -38,6 +38,15 @@ public class OrderNotificationListener {
     @EventListener
     public void onOrderStatusChanged(OrderStatusChangedEvent event) {
         try {
+            String statusText = switch (event.getNewStatus()) {
+                case CONFIRMED -> "Đã được xác nhận";
+                case SHIPPING -> "Đang giao hàng";
+                case DELIVERED -> "Đã được giao";
+                case COMPLETED -> "Đã hoàn thành";
+                case RETURNED -> "Đã trả hàng";
+                case CANCELLED -> "Đã hủy";
+                default -> event.getNewStatus().name();
+            };
             switch (event.getNewStatus()) {
                 case CONFIRMED -> notificationService.sendOrderConfirmedNotification(event.getChangedBy(), event.getOrder().getCustomer(), event.getOrder().getId());
                 case DELIVERED -> notificationService.sendOrderDeliveredNotification(event.getChangedBy(), event.getOrder().getCustomer(), event.getOrder().getId());
@@ -46,7 +55,7 @@ public class OrderNotificationListener {
                         event.getOrder().getCustomer(),
                         event.getOrder().getId(),
                         null,
-                        event.getNewStatus().name()
+                        statusText
                 );
             }
         } catch (Exception ex) {

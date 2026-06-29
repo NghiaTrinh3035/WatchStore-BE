@@ -110,13 +110,18 @@ public class NotificationService {
 
     private User requireUser(String userId) {
         if (!StringUtils.hasText(userId)) {
-            throw new IllegalArgumentException("User id is required");
+            throw new IllegalArgumentException("User id or username is required");
         }
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User with id " + userId + " not found"));
+                .or(() -> userRepository.findByUsername(userId))
+                .or(() -> userRepository.findByEmail(userId))
+                .orElseThrow(() -> new IllegalStateException("User not found: " + userId));
     }
 
     private User getPrivilegedSender(String senderId) {
+        if ("system".equalsIgnoreCase(senderId)) {
+            return getSystemSender();
+        }
         User sender = requireUser(senderId);
         if (sender.getRole() != UserRole.STAFF && sender.getRole() != UserRole.OWNER) {
             throw new IllegalStateException("Sender must have STAFF or OWNER role");
