@@ -113,6 +113,9 @@ public class ReportController {
         if ("excel".equalsIgnoreCase(type)) {
             headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
             headers.setContentDispositionFormData("attachment", "report_doanh_thu.xlsx");
+        } else if ("pdf".equalsIgnoreCase(type)) {
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "report_doanh_thu.pdf");
         }
         
         return ResponseEntity.ok()
