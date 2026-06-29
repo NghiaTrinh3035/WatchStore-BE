@@ -1,6 +1,6 @@
 -- Seed dữ liệu tổng hợp (base + mở rộng), chạy độc lập
 -- password user all: 123456
-USE projectcnpm;
+USE watchstore_db;
 SET NAMES utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 0;
